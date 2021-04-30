@@ -21,6 +21,8 @@ Atlas needs the following permissions:
 | `--allow-net`   | Atlas needs network access to accept incoming Requests                  |
 | `--allow-read`  | Atlas needs read permission to read from files                          |
 | `--allow-write` | Atlas needs write permission to create scaffold files with `atlas init` |
+| `--allow-env`   | TBD                                                                     |
+| `--allow-run`   | TBD                                                                     |
 
 ### Bootstrapping
 
