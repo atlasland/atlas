@@ -2,30 +2,37 @@
 
 Atlas is a web application framework for Deno.
 
+> ⚠️ This project is unstable and actively being developed. Use with caution.
+
 ## Documentation
 
 ### Installation
 
 ```shell
-deno install --allow-all --name atlas https://deno.land/x/atlas/atlas.ts`
+deno install -A -n atlas https://deno.land/x/atlas/cli.ts
 ```
 
 #### Why the `--allow-all` permission?
 
 Atlas needs the following permissions:
 
-| Permission     | Reason                                                |
-| -------------- | :---------------------------------------------------- |
-| `--allow-net`  | Atlas needs network access to acept incoming Requests |
-| `--allow-read` |                                                       |
+| Permission      | Reason                                                                  |
+| --------------- | :---------------------------------------------------------------------- |
+| `--allow-net`   | Atlas needs network access to accept incoming Requests                  |
+| `--allow-read`  | Atlas needs read permission to read from files                          |
+| `--allow-write` | Atlas needs write permission to create scaffold files with `atlas init` |
 
 ### Bootstrapping
 
-`atlas init`
+```shell
+atlas init
+```
 
 ### Starting an application
 
-`atlas start --port 400`
+```shell
+atlas start
+```
 
 ## Contributing
 
