@@ -26,14 +26,14 @@ export async function debug(...msg: unknown[]): Promise<void> {
  * Log to stdout with info level
  */
 export async function info(...msg: unknown[]): Promise<void> {
-  await write(Deno.stdout, blue(Level.INFO), ...msg);
+  await write(Deno.stdout, ` ${blue(Level.INFO)}`, ...msg);
 }
 
 /**
  * Log to stdout with warn level
  */
 export async function warn(...msg: unknown[]): Promise<void> {
-  await write(Deno.stdout, yellow(Level.WARN), ...msg);
+  await write(Deno.stdout, ` ${yellow(Level.WARN)}`, ...msg);
 }
 
 /**
