@@ -40,7 +40,7 @@ export async function warn(...msg: unknown[]): Promise<void> {
  * Log to stderr with error level
  */
 export async function error(...msg: unknown[]): Promise<void> {
-  await write(Deno.stderr, red(Level.ERROR.toUpperCase()), ...msg);
+  await write(Deno.stderr, red(Level.ERROR), ...msg);
 }
 
 /**
