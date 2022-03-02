@@ -1,7 +1,7 @@
-import { parse } from "https://deno.land/std@0.95.0/flags/mod.ts";
+import { flags } from "./deps.ts";
 
 import * as log from "./log/mod.ts";
-import type { Command } from "./console/mod.ts";
+import { type Command } from "./console/mod.ts";
 
 /**
  * Initializes an Atlas application
@@ -37,7 +37,7 @@ if (import.meta.main) {
   ]);
 
   const command = Deno.args[0] ?? "";
-  const args = parse(Deno.args.slice(1));
+  const args = flags.parse(Deno.args.slice(1));
 
   if (commands.has(command)) {
     try {
