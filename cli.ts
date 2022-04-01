@@ -1,6 +1,6 @@
 import { flags } from "./deps.ts";
 
-import * as log from "./log/mod.ts";
+import { default as logger } from "./log/logger.ts";
 import { type Command } from "./console/mod.ts";
 
 /**
@@ -9,9 +9,9 @@ import { type Command } from "./console/mod.ts";
 const init: Command = {
   name: "init",
   description: "Initializes an Atlas application",
-  handler: async (args) => {
+  handler: () => {
     // TBD
-    await log.info("atlas init", args);
+    logger.debug(`atlas init`);
   },
 };
 
@@ -24,9 +24,9 @@ const start: Command = {
   help: `
     --port  The port where to start the application listener
   `,
-  handler: async (args) => {
+  handler: () => {
     // TBD
-    await log.info("atlas start", args);
+    logger.debug(`atlas start`);
   },
 };
 
@@ -43,9 +43,9 @@ if (import.meta.main) {
     try {
       await commands.get(command)?.handler(args);
     } catch (err) {
-      log.error(`Command '${command}' failed`, err.message);
+      logger.error(`command '${command}' failed with message: ${err.message}`);
     }
   } else {
-    log.error(`Command '${command}' not found`);
+    logger.error(`command '${command}' not found`);
   }
 }

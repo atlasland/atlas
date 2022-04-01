@@ -8,5 +8,5 @@ export type Command = {
   /** Indicates whether the command should be shown in the commands list. */
   hidden?: boolean;
   /** The command handler function. */
-  handler: (args: unknown) => Promise<void>;
+  handler: (args: unknown) => Promise<void> | void;
 };
