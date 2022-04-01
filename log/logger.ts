@@ -9,11 +9,11 @@ type LoggerOptions = {
 
 export class Logger {
   readonly name: string;
-  #handlers: Set<LogHandler>;
+  public handlers: LogHandler[];
 
   constructor(name: Logger["name"], options?: LoggerOptions) {
     this.name = name;
-    this.#handlers = new Set(options?.handlers ?? []);
+    this.handlers = options?.handlers ?? [];
   }
 
   emergency(message: LogMessage["value"]): void {
@@ -51,7 +51,7 @@ export class Logger {
   #log(level: LogMessage["level"], message: LogMessage["value"]): void {
     const messageObject = new LogMessage(level, message);
 
-    for (const handler of this.#handlers) {
+    for (const handler of this.handlers) {
       handler.handle(messageObject);
     }
   }
