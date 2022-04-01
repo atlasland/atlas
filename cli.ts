@@ -1,4 +1,4 @@
-import { flags } from "./deps.ts";
+import { parse } from "flags/mod.ts";
 
 import { default as logger } from "./log/logger.ts";
 import { type Command } from "./console/mod.ts";
@@ -37,7 +37,7 @@ if (import.meta.main) {
   ]);
 
   const command = Deno.args[0] ?? "";
-  const args = flags.parse(Deno.args.slice(1));
+  const args = parse(Deno.args.slice(1));
 
   if (commands.has(command)) {
     try {
