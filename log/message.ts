@@ -11,6 +11,7 @@ export class LogMessage {
     this.#timestamp = Date.now();
   }
 
+  /** The time the message was created in ISO format */
   get time(): string {
     return new Date(this.#timestamp).toISOString();
   }
