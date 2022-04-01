@@ -1,5 +1,7 @@
 # Atlas
 
+[![codecov](https://codecov.io/gh/atlasland/atlas/branch/main/graph/badge.svg?token=LS8A7CRD48)](https://codecov.io/gh/atlasland/atlas)
+
 Atlas is a web application framework for Deno.
 
 > ⚠️ This project is unstable and actively being developed. Use with caution.
