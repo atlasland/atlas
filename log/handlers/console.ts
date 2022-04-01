@@ -4,26 +4,45 @@ import { LogMessage } from "../message.ts";
 import { getLevelValue, LogLevel } from "../level.ts";
 
 type ConsoleHandlerOptions = {
+  /** Show colors on the console output. Defaults to `true` */
   color?: boolean;
+
+  /** Add timestamp to the log message. Defaults to `false` */
   timestamp?: boolean;
+
+  /** Format log message as JSON. Defaults to `false` */
   json?: boolean;
+
+  /**
+   * Target for the log messages.
+   *
+   * | Default       | Level                                         |
+   * |:--------------|:----------------------------------------------|
+   * | `Deno.stdout` | `debug`, `info`, `notice`, and `warning`      |
+   * | `Deno.stderr` | `error`, `critical`, `alert`, and `emergency` |
+   */
+  target?: Deno.WriterSync;
 };
 
 export class ConsoleHandler extends LogHandler {
-  #target = Deno.stdout;
   #color: boolean;
-  #timestamp: boolean;
   #json: boolean;
+  #target: Deno.WriterSync;
+  #timestamp: boolean;
 
   constructor(options?: ConsoleHandlerOptions) {
     super();
     this.#color = options?.color ?? true;
-    this.#timestamp = options?.timestamp ?? false;
     this.#json = options?.json ?? false;
+    this.#target = options?.target ?? Deno.stdout;
+    this.#timestamp = options?.timestamp ?? false;
   }
 
   override handle(message: LogMessage): void {
-    if (getLevelValue(message.level) <= getLevelValue(LogLevel.ERROR)) {
+    if (
+      this.#target === Deno.stdout &&
+      getLevelValue(message.level) <= getLevelValue(LogLevel.ERROR)
+    ) {
       this.#target = Deno.stderr;
     }
 
@@ -42,7 +61,11 @@ export class ConsoleHandler extends LogHandler {
     const output = [];
 
     if (this.#timestamp) {
-      output.push(colors.gray(message.time));
+      if (this.#color) {
+        output.push(colors.gray(message.time));
+      } else {
+        output.push(message.time);
+      }
     }
 
     const level = this.#formatLevel(message.level);
