@@ -30,29 +30,45 @@ jobs:
         git config --global core.autocrlf false
         git config --global core.eol lf
 
-    - uses: actions/checkout@v2
+    - name: Close repository
+      uses: actions/checkout@v2
 
-    # Setup deno
-    - uses: denoland/setup-deno@v1
+    - name: Setup deno
+      uses: denoland/setup-deno@v1
       with:
         deno-version: v1.x
 
-    # Cache dependencies
-    - uses: actions/cache@v2
+    - name: Cache dependencies
+      uses: actions/cache@v2
       with:
         path: ${{ env.DENO_DIR }}
         key: ${{ env.CACHE_VERSION }}-${{ hashFiles('lock.json') }}
 
-    # Check if the code is formatted according to Deno's default
-    # formatting conventions.
-    - run: deno fmt --check
+    - name: Run all tests
+      run: deno task test
 
-    # Scan the code for syntax errors and style issues.
-    - run: deno lint
+    - name: Generate test coverage report
+      run: deno coverage ./cov --lcov > cov.lcov
 
-    # Run all test files in the repository and collect code coverage.
-    - run: deno test --coverage=coverage/
+    - name: Upload coverage
+      uses: codecov/codecov-action@v2
+      with:
+        name: ${{ matrix.os }}
+        files: cov.lcov
 
-    # Generates a report from the collected coverage in `deno test --coverage`.
-    - run: deno coverage --lcov coverage/ > coverage.lcov
-      if: matrix.os == 'ubuntu-latest'
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close repository
+        uses: actions/checkout@v2
+
+      - name: Setup deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Check format
+        run: deno fmt --check
+
+      - name: Lint
+        run: deno lint
