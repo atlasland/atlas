@@ -1,0 +1,58 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches: [main]
+
+env:
+  CACHE_VERSION: 1
+  DENO_DIR: .deno
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    # Configure the Github Actions runner to use Linux-style line endings before
+    # running the `actions/checkout` step due to a known issue with handling
+    # Windows-style line endings (CRLF)
+    # https://github.com/actions/checkout/issues/135
+    - name: Set git to use LF
+      if: matrix.os == 'windows-latest'
+      run: |
+        git config --global core.autocrlf false
+        git config --global core.eol lf
+
+    - uses: actions/checkout@v2
+
+    # Setup deno
+    - uses: denoland/setup-deno@v1
+      with:
+        deno-version: v1.x
+
+    # Cache dependencies
+    - uses: actions/cache@v2
+      with:
+        path: ${{ env.DENO_DIR }}
+        key: ${{ env.CACHE_VERSION }}-${{ hashFiles('lock.json') }}
+
+    # Check if the code is formatted according to Deno's default
+    # formatting conventions.
+    - run: deno fmt --check
+
+    # Scan the code for syntax errors and style issues.
+    - run: deno lint
+
+    # Run all test files in the repository and collect code coverage.
+    - run: deno test --coverage=coverage/
+
+    # Generates a report from the collected coverage in `deno test --coverage`.
+    - run: deno coverage --lcov coverage/ > coverage.lcov
+      if: matrix.os == 'ubuntu-latest'
