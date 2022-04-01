@@ -1,0 +1,24 @@
+{
+  "fmt": {
+    "files": {
+      "exclude": [
+        ".git",
+        ".deno",
+        "cov"
+      ]
+    }
+  },
+  "importMap": "import_map.json",
+  "lint": {
+    "files": {
+      "exclude": [
+        ".git",
+        ".deno",
+        "cov"
+      ]
+    }
+  },
+  "tasks": {
+    "test": "deno test --unstable --allow-all --coverage=./cov"
+  }
+}
