@@ -1,5 +1,6 @@
-# Created by https://www.toptal.com/developers/gitignore/api/macos,windows,linux,vscode,jetbrains,vim,nova
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,linux,vscode,jetbrains,vim,nova
+# Coverage
+cov
+*.lcov
 
 ### JetBrains ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -126,6 +127,3 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-# End of https://www.toptal.com/developers/gitignore/api/macos,windows,linux,vscode,jetbrains,vim,nova
-
