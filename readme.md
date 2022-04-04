@@ -22,9 +22,10 @@ Atlas is a web application framework for Deno.
 
 Visit [atlas.land/docs](https://atlas.land/docs) to view the full documentation.
 
-```shell
-deno install -A -n atlas https://deno.land/x/atlas/cli.ts
-```
+## Community
+
+Join the [Atlas Discord](https://discord.gg/3TWUmV4Wmg) server to chat with
+other community members.
 
 ## Contributing
 
