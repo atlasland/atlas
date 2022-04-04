@@ -1,6 +1,6 @@
 import { parse } from "flags/mod.ts";
 
-import { default as logger } from "./log/logger.ts";
+import { default as logger } from "./log/mod.ts";
 import { type Command } from "./console/mod.ts";
 
 /**
