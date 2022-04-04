@@ -1,4 +1,4 @@
-/** Log severity levels */
+/** Log severity levels as per RFC 5424 specification. */
 export enum LogLevel {
   /** Emergency: System is unusable. */
   EMERGENCY = "emergency",
