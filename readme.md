@@ -1,8 +1,10 @@
-<div style="text-align: center">
-  <h1>Atlas</h1>
-</div>
+<p align="center">
+  <a href="https://atlas.land">
+    <h1 align="center">Atlas</h1>
+  </a>
+</p>
 
-<p style="text-align: center">
+<p align="center">
   <a href="https://deno.land/x/atlas" target="_blank">
     <img src="https://img.shields.io/badge/-deno.land/x/atlas-000.svg?logo=deno&labelColor=000" alt="denoland" />
   </a>
