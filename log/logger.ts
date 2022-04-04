@@ -1,7 +1,6 @@
 import { LogLevel } from "./level.ts";
 import { LogMessage } from "./message.ts";
 import { type LogHandler } from "./handler.ts";
-import { ConsoleHandler } from "./handlers/console.ts";
 
 type LoggerOptions = {
   handlers?: LogHandler[];
