@@ -11,7 +11,7 @@ const init: Command = {
   description: "Initializes an Atlas application",
   handler: () => {
     // TBD
-    logger.debug(`atlas init`);
+    logger.notice("`atlas init` command not implemented yet");
   },
 };
 
@@ -22,11 +22,11 @@ const start: Command = {
   name: "start",
   description: "Starts an Atlas application",
   help: `
-    --port  The port where to start the application listener
+  --port  The port where to start the application listener
   `,
   handler: () => {
     // TBD
-    logger.debug(`atlas start`);
+    logger.notice("`atlas start` command not implemented yet");
   },
 };
 
