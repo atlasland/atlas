@@ -1,6 +1,18 @@
-# Atlas
+<div style="text-align: center">
+  <h1>Atlas</h1>
+</div>
 
-[![codecov](https://codecov.io/gh/atlasland/atlas/branch/main/graph/badge.svg?token=LS8A7CRD48)](https://codecov.io/gh/atlasland/atlas)
+<p style="text-align: center">
+  <a href="https://deno.land/x/atlas" target="_blank">
+    <img src="https://img.shields.io/badge/-deno.land/x/atlas-000.svg?logo=deno&labelColor=000" alt="denoland" />
+  </a>
+  <a href="https://codecov.io/gh/atlasland/atlas" target="_blank">
+    <img src="https://codecov.io/gh/atlasland/atlas/branch/main/graph/badge.svg?token=LS8A7CRD48" alt="codecov" />
+  </a>
+  <a href="https://github.com/atlasland/atlas/blob/main/license" target="_blank">
+    <img src="https://img.shields.io/badge/license-MIT-green.svg?labelColor=000" alt="license" />
+  </a>
+</p>
 
 Atlas is a web application framework for Deno.
 
