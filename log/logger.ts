@@ -64,9 +64,3 @@ export class Logger {
     }
   }
 }
-
-export default new Logger("default", {
-  handlers: [
-    new ConsoleHandler(),
-  ],
-});
