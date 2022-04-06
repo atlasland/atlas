@@ -1,5 +1,7 @@
-import { assertEquals } from "testing/asserts.ts";
+import { asserts } from "../deps.ts";
 import { getLevelValue, LogLevel } from "./level.ts";
+
+const { assertEquals } = asserts;
 
 Deno.test("log level emergency", () => {
   assertEquals(LogLevel.EMERGENCY, "emergency");

@@ -1,7 +1,9 @@
-import { assertEquals, assertStringIncludes } from "testing/asserts.ts";
+import { asserts } from "../../deps.ts";
 import { LogLevel } from "../level.ts";
 import { LogMessage } from "../message.ts";
 import { ConsoleHandler } from "./console.ts";
+
+const { assertEquals, assertStringIncludes } = asserts;
 
 class TestWriter implements Deno.WriterSync {
   public buffer: Uint8Array = new Uint8Array();

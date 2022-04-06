@@ -1,4 +1,4 @@
-import * as colors from "fmt/colors.ts";
+import { colors } from "../../deps.ts";
 import { LogHandler } from "../handler.ts";
 import { LogMessage } from "../message.ts";
 import { getLevelValue, LogLevel } from "../level.ts";
