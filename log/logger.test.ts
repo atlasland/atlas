@@ -1,8 +1,10 @@
-import { assertEquals, assertStrictEquals } from "testing/asserts.ts";
+import { asserts } from "../deps.ts";
 import { LogHandler } from "./handler.ts";
 import { LogLevel } from "./level.ts";
 import { LogMessage } from "./message.ts";
 import { Logger } from "./logger.ts";
+
+const { assertEquals } = asserts;
 
 class TestHandler extends LogHandler {
   public messages: LogMessage[] = [];
@@ -60,7 +62,7 @@ Deno.test("accepts multiple handlers", () => {
 
   logger.debug(`a single message`);
 
-  assertStrictEquals(
+  assertEquals(
     (logger.handlers[0] as TestHandler).messages[0],
     (logger.handlers[1] as TestHandler).messages[0],
   );

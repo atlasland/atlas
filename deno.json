@@ -8,7 +8,6 @@
       ]
     }
   },
-  "importMap": "import_map.json",
   "lint": {
     "files": {
       "exclude": [
