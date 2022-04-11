@@ -1,6 +1,6 @@
 import { colors } from "../../deps.ts";
 import { LogHandler } from "../handler.ts";
-import { LogMessage } from "../message.ts";
+import { LogRecord } from "../record.ts";
 import { getLevelValue, LogLevel } from "../level.ts";
 
 type ConsoleHandlerOptions = {
@@ -38,23 +38,29 @@ export class ConsoleHandler extends LogHandler {
     this.#timestamp = options?.timestamp ?? false;
   }
 
-  override handle(message: LogMessage): void {
+  override handle(record: LogRecord): string {
     if (
       this.#target === Deno.stdout &&
-      getLevelValue(message.level) <= getLevelValue(LogLevel.ERROR)
+      getLevelValue(record.level) <= getLevelValue(LogLevel.ERROR)
     ) {
       this.#target = Deno.stderr;
     }
 
-    super.handle(message);
+    const formatted = this.format(record);
+
+    this.#target.writeSync(
+      new TextEncoder().encode(`${formatted}\n`),
+    );
+
+    return formatted;
   }
 
-  override format(message: LogMessage): string {
+  override format(record: LogRecord): string {
     if (this.#json) {
       return JSON.stringify({
-        ...(this.#timestamp && { timestamp: message.time }),
-        level: message.level,
-        message: message.value,
+        ...(this.#timestamp && { timestamp: record.time }),
+        level: record.level,
+        message: record.message,
       });
     }
 
@@ -62,23 +68,17 @@ export class ConsoleHandler extends LogHandler {
 
     if (this.#timestamp) {
       if (this.#color) {
-        output.push(colors.gray(message.time));
+        output.push(colors.gray(record.time));
       } else {
-        output.push(message.time);
+        output.push(record.time);
       }
     }
 
-    const level = this.#formatLevel(message.level);
+    const level = this.#formatLevel(record.level);
 
-    output.push(level, message.value);
+    output.push(level, record.message);
 
     return output.join(" ");
-  }
-
-  log(message: string): void {
-    this.#target.writeSync(
-      new TextEncoder().encode(`${message}\n`),
-    );
   }
 
   #formatLevel(level: LogLevel): string {

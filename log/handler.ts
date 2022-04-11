@@ -1,17 +1,13 @@
-import { LogMessage } from "./message.ts";
+import { type LogRecord } from "./record.ts";
 
 export abstract class LogHandler {
-  /** Formats a log message for the handler */
-  format(message: LogMessage): string {
-    return message.value;
+  /** Formats a log record for the handler */
+  format(record: LogRecord): string {
+    return record.message;
   }
 
-  /** Handles a log message */
-  handle(message: LogMessage): void {
-    const formatted = this.format(message);
-    return this.log(formatted);
+  /** Handles a log record. Returns the formatted message by default, to enable inline logging */
+  handle(record: LogRecord): string {
+    return this.format(record);
   }
-
-  /** Logs a message */
-  abstract log(message: string): void;
 }
