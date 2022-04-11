@@ -21,6 +21,7 @@ export enum LogLevel {
 /** Union of valid log severity level strings */
 export type LogLevelName = Lowercase<keyof typeof LogLevel>;
 
+/** Numerical value representation of a log severity level as per RFC 5424 specification  */
 export function getLevelValue(level: LogLevel): number {
   return Object.values(LogLevel).indexOf(level);
 }

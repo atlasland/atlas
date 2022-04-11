@@ -3,7 +3,7 @@ import { ConsoleHandler } from "./handlers/console.ts";
 
 export * from "./logger.ts";
 export * from "./level.ts";
-export * from "./message.ts";
+export * from "./record.ts";
 export * from "./handler.ts";
 export * from "./handlers/console.ts";
 

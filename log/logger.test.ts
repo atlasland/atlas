@@ -1,26 +1,24 @@
 import { asserts } from "../deps.ts";
 import { LogHandler } from "./handler.ts";
 import { LogLevel } from "./level.ts";
-import { LogMessage } from "./message.ts";
+import { LogRecord } from "./record.ts";
 import { Logger } from "./logger.ts";
 
 const { assertEquals } = asserts;
 
 class TestHandler extends LogHandler {
-  public messages: LogMessage[] = [];
+  public records: LogRecord[] = [];
   public formatted: string[] = [];
 
-  override format(message: LogMessage): string {
-    return `[${message.level}] ${message.value}`;
+  override format(record: LogRecord): string {
+    const formatted = `[${record.level}] ${record.message}`;
+    this.formatted.push(formatted);
+    return formatted;
   }
 
-  override handle(message: LogMessage): void {
-    this.messages.push(message);
-    super.handle(message);
-  }
-
-  log(message: string): void {
-    this.formatted.push(message);
+  override handle(record: LogRecord): string {
+    this.records.push(record);
+    return this.format(record);
   }
 }
 
@@ -30,12 +28,12 @@ Object.values(LogLevel).forEach((level) => {
       handlers: [new TestHandler()],
     });
 
-    const messages = (logger.handlers[0] as TestHandler).messages;
+    const records = (logger.handlers[0] as TestHandler).records;
 
     logger[level]?.(`hello`);
 
-    assertEquals(messages[messages.length - 1].level, level);
-    assertEquals(messages[messages.length - 1].value, "hello");
+    assertEquals(records[records.length - 1].level, level);
+    assertEquals(records[records.length - 1].message, "hello");
   });
 });
 
@@ -63,7 +61,7 @@ Deno.test("accepts multiple handlers", () => {
   logger.debug(`a single message`);
 
   assertEquals(
-    (logger.handlers[0] as TestHandler).messages[0],
-    (logger.handlers[1] as TestHandler).messages[0],
+    (logger.handlers[0] as TestHandler).records[0],
+    (logger.handlers[1] as TestHandler).records[0],
   );
 });
