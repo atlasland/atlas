@@ -94,7 +94,7 @@ export class ConsoleHandler extends LogHandler {
           return colors.red(level);
 
         case LogLevel.ERROR:
-          return colors.magenta(level);
+          return colors.red(level);
 
         case LogLevel.WARNING:
           return colors.yellow(level);
