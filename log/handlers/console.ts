@@ -85,7 +85,7 @@ export class ConsoleHandler extends LogHandler {
     if (this.#color) {
       switch (level) {
         case LogLevel.EMERGENCY:
-          return colors.bgRed(` ${level.toUpperCase()} `);
+          return colors.bgRed(colors.white(` ${level.toUpperCase()} `));
 
         case LogLevel.ALERT:
           return colors.red(level.toUpperCase());
