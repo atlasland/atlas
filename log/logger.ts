@@ -7,7 +7,7 @@ type LoggerOptions = {
 };
 
 export class Logger {
-  /** The logger name. Used as prefix by default for log records when formatting */
+  /** The logger name. Used as prefix for log records when formatting */
   readonly name: string;
 
   /** A list of log handlers. Each log record will be passed to them in turn */
@@ -62,7 +62,7 @@ export class Logger {
     const record = new LogRecord({ level, message });
 
     for (const handler of this.handlers) {
-      handler.handle(record);
+      handler.handle({ loggerName: this.name, record });
     }
   }
 }

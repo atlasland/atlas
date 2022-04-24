@@ -1,9 +1,11 @@
 import { colors } from "../../deps.ts";
-import { LogHandler } from "../handler.ts";
-import { LogRecord } from "../record.ts";
+import { LogHandler, type LogHandlerOptions } from "../handler.ts";
 import { getLevelValue, LogLevel } from "../level.ts";
 
 type ConsoleHandlerOptions = {
+  /** Show logger name on console output. Defaults to `false` */
+  name?: boolean;
+
   /** Show colors on the console output. Defaults to `true` */
   color?: boolean;
 
@@ -27,6 +29,7 @@ type ConsoleHandlerOptions = {
 export class ConsoleHandler extends LogHandler {
   #color: boolean;
   #json: boolean;
+  #name: boolean;
   #target: Deno.WriterSync;
   #timestamp: boolean;
 
@@ -34,11 +37,12 @@ export class ConsoleHandler extends LogHandler {
     super();
     this.#color = options?.color ?? true;
     this.#json = options?.json ?? false;
+    this.#name = options?.name ?? false;
     this.#target = options?.target ?? Deno.stdout;
     this.#timestamp = options?.timestamp ?? false;
   }
 
-  override handle(record: LogRecord): string {
+  override handle({ loggerName, record }: LogHandlerOptions): string {
     if (
       this.#target === Deno.stdout &&
       getLevelValue(record.level) <= getLevelValue(LogLevel.ERROR)
@@ -46,7 +50,7 @@ export class ConsoleHandler extends LogHandler {
       this.#target = Deno.stderr;
     }
 
-    const formatted = this.format(record);
+    const formatted = this.format({ loggerName, record });
 
     this.#target.writeSync(
       new TextEncoder().encode(`${formatted}\n`),
@@ -55,9 +59,10 @@ export class ConsoleHandler extends LogHandler {
     return formatted;
   }
 
-  override format(record: LogRecord): string {
+  override format({ loggerName, record }: LogHandlerOptions): string {
     if (this.#json) {
       return JSON.stringify({
+        ...(this.#name && { name: loggerName }),
         ...(this.#timestamp && { timestamp: record.time }),
         level: record.level,
         message: record.message,
@@ -65,6 +70,14 @@ export class ConsoleHandler extends LogHandler {
     }
 
     const output = [];
+
+    if (this.#name && loggerName) {
+      if (this.#color) {
+        output.push(colors.gray(`[${loggerName}]`));
+      } else {
+        output.push(`[${loggerName}]`);
+      }
+    }
 
     if (this.#timestamp) {
       if (this.#color) {
