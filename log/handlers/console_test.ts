@@ -15,7 +15,6 @@ class TestWriter implements Deno.WriterSync {
   }
 }
 
-Deno.test("prints a timestamp for a message", () => {
 Deno.test("[log] console: prints the logger name", () => {
   const writer = new TestWriter();
   const logger = new Logger("test", {
@@ -35,6 +34,7 @@ Deno.test("[log] console: prints the logger name", () => {
   );
 });
 
+Deno.test("[log] console: prints the timestamp for a log record", () => {
   const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
   const writer = new TestWriter();
   const handler = new ConsoleHandler({
@@ -45,13 +45,13 @@ Deno.test("[log] console: prints the logger name", () => {
 
   handler.handle({ record });
 
-  assertEquals<string>(
+  assertEquals(
     new TextDecoder().decode(writer.buffer),
-    `${new Date(record.time).toISOString()} debug hello\n`,
+    `${record.time} debug hello\n`,
   );
 });
 
-Deno.test("formats a message to JSON", () => {
+Deno.test("[log] console: formats a record to JSON", () => {
   const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
   const writer = new TestWriter();
   const handler = new ConsoleHandler({
@@ -61,13 +61,13 @@ Deno.test("formats a message to JSON", () => {
 
   handler.handle({ record });
 
-  assertEquals<string>(
+  assertEquals(
     new TextDecoder().decode(writer.buffer),
     `{"level":"debug","message":"hello"}\n`,
   );
 });
 
-Deno.test("colorizes a log record level", () => {
+Deno.test("[log] console: colorizes a log record level", () => {
   const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
   const writer = new TestWriter();
   const handler = new ConsoleHandler({
