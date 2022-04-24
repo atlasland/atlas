@@ -1,5 +1,6 @@
 import { asserts } from "../../deps.ts";
 import { LogLevel } from "../level.ts";
+import { Logger } from "../logger.ts";
 import { LogRecord } from "../record.ts";
 import { ConsoleHandler } from "./console.ts";
 
@@ -15,6 +16,25 @@ class TestWriter implements Deno.WriterSync {
 }
 
 Deno.test("prints a timestamp for a message", () => {
+Deno.test("[log] console: prints the logger name", () => {
+  const writer = new TestWriter();
+  const logger = new Logger("test", {
+    handlers: [
+      new ConsoleHandler({
+        name: true,
+        target: writer,
+      }),
+    ],
+  });
+
+  logger.debug("this is a debug message");
+
+  assertStringIncludes(
+    new TextDecoder().decode(writer.buffer),
+    "[test]",
+  );
+});
+
   const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
   const writer = new TestWriter();
   const handler = new ConsoleHandler({
@@ -23,7 +43,7 @@ Deno.test("prints a timestamp for a message", () => {
     timestamp: true,
   });
 
-  handler.handle(record);
+  handler.handle({ record });
 
   assertEquals<string>(
     new TextDecoder().decode(writer.buffer),
@@ -39,7 +59,7 @@ Deno.test("formats a message to JSON", () => {
     target: writer,
   });
 
-  handler.handle(record);
+  handler.handle({ record });
 
   assertEquals<string>(
     new TextDecoder().decode(writer.buffer),
@@ -55,7 +75,7 @@ Deno.test("colorizes a log record level", () => {
     target: writer,
   });
 
-  handler.handle(record);
+  handler.handle({ record });
 
   // [90mdebug[39m
   // ^^^^---------
