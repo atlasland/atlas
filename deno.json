@@ -19,6 +19,7 @@
   },
   "tasks": {
     "cache": "deno cache --reload --lock=lock.json --lock-write cli.ts log/mod.ts console/mod.ts",
+    "check": "deno check cli.ts log/mod.ts console/mod.ts",
     "test": "deno test --unstable --allow-all --coverage=./cov"
   }
 }
