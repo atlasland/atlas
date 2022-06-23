@@ -86,6 +86,6 @@ Object.values(LogLevel).forEach((level) => {
 
     logger[level]?.(`hello`);
 
-    assertEquals(records[records.length - 1].level, level);
+    assertEquals(records[records.length - 1]?.level, level);
   });
 });
