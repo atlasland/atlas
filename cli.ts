@@ -41,8 +41,10 @@ if (import.meta.main) {
   if (commands.has(command)) {
     try {
       await commands.get(command)?.handler(args);
-    } catch (err) {
-      logger.error(`command '${command}' failed with message: ${err.message}`);
+    } catch (err: unknown) {
+      logger.error(
+        `command '${command}' failed with message: ${(err as Error).message}`,
+      );
     }
   } else {
     logger.error(`command '${command}' not found`);
