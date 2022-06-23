@@ -1,4 +1,21 @@
 {
+  "compilerOptions": {
+    "allowJs": false,
+    "experimentalDecorators": false,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "dom.asynciterable",
+      "deno.ns",
+      "deno.unstable"
+    ],
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "useUnknownInCatchVariables": true
+  },
   "fmt": {
     "files": {
       "exclude": [
