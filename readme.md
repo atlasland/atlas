@@ -18,7 +18,8 @@
 
 Atlas is a web application framework for Deno.
 
-> ⚠️ This project is unstable and actively being developed. Use with caution.
+> ⚠️ This project is actively being developed. We do not recommend to use it in
+> production environments.
 
 ## Documentation
 
