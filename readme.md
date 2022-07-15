@@ -9,7 +9,7 @@
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://atlas.land/docs">Docs</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://github.com/atlasland/atlas-examples/">Examples</a>
+  <a href="https://atlas.land/examples">Examples</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://atlas.land/changelog">Changelog</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
