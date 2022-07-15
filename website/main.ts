@@ -38,11 +38,13 @@ async function handler(request: Request): Promise<Response> {
       // early return to bypass template layout
       return new Response(body, { status, headers });
     } // api (deno doc)
-    else if (["/api"].includes(pathname)) {
+    else if (pathname.startsWith("/api")) {
+      // parse module path from URL
+      const mod = pathname.replace("/api", "");
       status = 307;
       headers = {
         ...headers,
-        "location": "https://doc.deno.land/https://deno.land/x/atlas",
+        "location": `https://doc.deno.land/https://deno.land/x/atlas${mod}`,
       };
     } // other routes
     else {
