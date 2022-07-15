@@ -49,12 +49,18 @@
   <style type="text/tailwindcss">
     @layer base {
       a {
-        @apply text-orange-300;
+        @apply text-yellow-500;
       }
     }
   </style>
 </head>
 <body class="flex flex-col dark:bg-neutral-900 dark:text-neutral-200 bg-white text-neutral-800 font-sans space-y-8">
+  <div class="w-full text-sm flex items-center space-x-4 px-4 py-2 md:py-4 lg:px-8 lg:py-2 -mb-8 bg-yellow-500 text-neutral-900">
+    <span>
+      Atlas is in early development. It's <strong>not recommended</strong> to be used in production.
+    </span>
+  </div>
+
   <header class="flex items-center space-x-4 px-4 py-2 md:py-4 lg:px-8 lg:py-6">
     <a href="/">[Logo]</a>
     <nav class="flex items-center flex-1 space-x-4">
