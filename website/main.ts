@@ -46,6 +46,21 @@ async function handler(request: Request): Promise<Response> {
         ...headers,
         "location": `https://doc.deno.land/https://deno.land/x/atlas${mod}`,
       };
+    } // docs
+    else if (pathname === "/docs") {
+      const versions = [];
+      for await (const entry of Deno.readDir(`${cwd}/${pathname}`)) {
+        if (entry.isDirectory) {
+          versions.push(entry);
+        }
+      }
+
+      status = 307;
+      headers = {
+        ...headers,
+        // redirect to latest version
+        "location": `/docs/${versions.at(-1)?.name}`,
+      };
     } // other routes
     else {
       // try /[route].html first
