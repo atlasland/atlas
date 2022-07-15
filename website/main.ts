@@ -37,8 +37,8 @@ async function handler(request: Request): Promise<Response> {
       };
       // early return to bypass template layout
       return new Response(body, { status, headers });
-    } // docs
-    else if (["/docs", "/documentation"].includes(pathname)) {
+    } // api (deno doc)
+    else if (["/api"].includes(pathname)) {
       status = 307;
       headers = {
         ...headers,
@@ -46,6 +46,7 @@ async function handler(request: Request): Promise<Response> {
       };
     } // other routes
     else {
+      // try /[route].html first
       try {
         body = await Deno.readTextFile(`${cwd}/${pathname}.html`);
       } // fallback to `/[route]/index.html`
