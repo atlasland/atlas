@@ -37,13 +37,6 @@ async function handler(request: Request): Promise<Response> {
       };
       // early return to bypass template layout
       return new Response(body, { status, headers });
-    } // home
-    else if (["/", "/index.html"].includes(pathname)) {
-      body = await Deno.readTextFile(`${cwd}/index.html`);
-      headers = {
-        ...headers,
-        "cache-control": "public, max-age=900, stale-while-revalidate=900",
-      };
     } // docs
     else if (["/docs", "/documentation"].includes(pathname)) {
       status = 307;
