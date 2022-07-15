@@ -35,6 +35,8 @@ async function handler(request: Request): Promise<Response> {
         // TODO: fingerprint assets for longer cache TTL + immutable
         "cache-control": "public, max-age=900, stale-while-revalidate=900",
       };
+      // early return to bypass template layout
+      return new Response(body, { status, headers });
     } // home
     else if (["/", "/index.html"].includes(pathname)) {
       body = await Deno.readTextFile(`${cwd}/index.html`);
