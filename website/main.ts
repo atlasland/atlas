@@ -155,7 +155,7 @@ function render(
       }
 
       if (Object.hasOwn(props, key)) {
-        rendered = rendered.replace(`{{ ${key} }}`, value.toString());
+        rendered = rendered.replaceAll(`{{ ${key} }}`, value.toString());
       }
     }
   }
