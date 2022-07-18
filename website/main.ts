@@ -8,6 +8,11 @@ const cwd = Deno.cwd().includes("website")
   ? Deno.cwd()
   : `${Deno.cwd()}/website`;
 
+const config = {
+  pagesDir: `${cwd}/pages`,
+  layoutFile: "_layout.html",
+};
+
 async function handler(request: Request): Promise<Response> {
   const { pathname, search } = new URL(request.url);
 
@@ -23,20 +28,28 @@ async function handler(request: Request): Promise<Response> {
     "content-type": type,
   };
 
-  // response body
-  let body: string | null = null;
+  let content: string | null = null;
 
   try {
+    // TODO: enable nested layouts
+    const layout = await Deno.readTextFile(
+      `${config.pagesDir}/${config.layoutFile}`,
+    );
+
     // static assets
     if (pathname.startsWith("/public/")) {
-      body = await Deno.readTextFile(`${cwd}/${pathname}`);
+      content = await Deno.readTextFile(`${cwd}/${pathname}`);
       headers = {
         ...headers,
         // TODO: fingerprint assets for longer cache TTL + immutable
         "cache-control": "public, max-age=900, stale-while-revalidate=900",
       };
+
       // early return to bypass template layout
-      return new Response(body, { status, headers });
+      return new Response(content, {
+        status,
+        headers,
+      });
     } // api (deno doc)
     else if (pathname.startsWith("/api")) {
       // parse module path from URL
@@ -49,7 +62,9 @@ async function handler(request: Request): Promise<Response> {
     } // docs
     else if (pathname === "/docs") {
       const versions = [];
-      for await (const entry of Deno.readDir(`${cwd}/${pathname}`)) {
+      for await (
+        const entry of Deno.readDir(`${config.pagesDir}/${pathname}`)
+      ) {
         if (entry.isDirectory) {
           versions.push(entry);
         }
@@ -65,10 +80,16 @@ async function handler(request: Request): Promise<Response> {
     else {
       // try /[route].html first
       try {
-        body = await Deno.readTextFile(`${cwd}/${pathname}.html`);
+        content = await Deno.readTextFile(
+          `${config.pagesDir}/${pathname}.html`,
+        );
       } // fallback to `/[route]/index.html`
-      catch (_) {
-        body = await Deno.readTextFile(`${cwd}/${pathname}/index.html`);
+      catch (error: unknown) {
+        if ((error as Error).name === "NotFound") {
+          content = await Deno.readTextFile(
+            `${config.pagesDir}/${pathname}/index.html`,
+          );
+        }
       }
 
       headers = {
@@ -76,42 +97,70 @@ async function handler(request: Request): Promise<Response> {
         "cache-control": "public, max-age=900, stale-while-revalidate=900",
       };
     }
+
+    const payload = render(layout, {
+      // layout "props" data from child pages
+      title: content?.match(/<!-- title: (.*) -->/)?.at(1),
+      meta_description: content?.match(/<!-- meta_description: (.*) -->/)?.at(
+        1,
+      ),
+      content,
+    });
+
+    return new Response(payload, {
+      status,
+      headers,
+    });
   } catch (error: unknown) {
     logger.error((error as Error).message);
 
     // 404
     if ((error as Error).name === "NotFound") {
       status = 404;
-      body = await Deno.readTextFile(`${cwd}/404.html`);
+      content = await Deno.readTextFile(`${config.pagesDir}/404.html`);
     } // 500
     else {
       status = 500;
-      body = await Deno.readTextFile(`${cwd}/500.html`);
+      content = await Deno.readTextFile(`${config.pagesDir}/500.html`);
     }
-  } finally {
-    logger.info(`${status} ${request.method} ${pathname}${search}`);
 
-    const template = await Deno.readTextFile(`${cwd}/template.html`);
+    const payload = render(content);
 
-    // parse meta data
-    const title = body?.match(/<!-- title: (.*) -->/);
-    const meta_description = body?.match(/<!-- meta_description: (.*) -->/);
-
-    // inject meta data into template
-    const payload = template
-      .replaceAll("{{ title }}", title?.at(1) ?? "{{ title }}")
-      .replaceAll(
-        "{{ meta_description }}",
-        meta_description?.at(1) ?? "{{ meta_description }}",
-      )
-      .replaceAll("{{ content }}", body ?? "");
-
-    // deno-lint-ignore no-unsafe-finally
     return new Response(payload, {
       status,
       headers,
     });
+  } finally {
+    logger.info(`${status} ${request.method} ${pathname}${search}`);
   }
+}
+
+/**
+ * Renders a template into a string to be sent as response
+ * @param template The template string
+ * @param props The properties to inject into the template
+ */
+function render(
+  template: string | null,
+  props: Record<string, string | number | null | undefined> = {},
+): string | null {
+  let rendered = template;
+
+  if (rendered) {
+    for (const key in props) {
+      const value = props[key];
+
+      if (!value) {
+        continue;
+      }
+
+      if (Object.hasOwn(props, key)) {
+        rendered = rendered.replace(`{{ ${key} }}`, value.toString());
+      }
+    }
+  }
+
+  return rendered;
 }
 
 await serve(handler, {
