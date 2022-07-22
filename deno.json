@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "allowJs": false,
-    "experimentalDecorators": false,
     "lib": [
       "dom",
       "dom.iterable",
