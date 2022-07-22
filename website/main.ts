@@ -1,4 +1,4 @@
-import { contentType, extname, serve } from "./deps.ts";
+import { serve, serveFile } from "./deps.ts";
 
 // TODO: replace with log module
 const logger = console;
@@ -9,47 +9,50 @@ const cwd = Deno.cwd().includes("website")
   : `${Deno.cwd()}/website`;
 
 const config = {
-  pagesDir: `${cwd}/pages`,
-  layoutFile: "_layout.html",
+  pages: {
+    dir: `${cwd}/pages`,
+    layout: "_layout.html",
+    "404": "_404.html",
+    "500": "_500.html",
+    // global props and regexes to parse them from a page's content
+    props: {
+      title: /<!-- title: (.*) -->/,
+      meta_description: /<!-- meta_description: (.*) -->/,
+      canonical: /<!-- canonical: (.*) -->/,
+      og_type: /<!-- og_type: (.*) -->/,
+      og_image: /<!-- og_image: (.*) -->/,
+    },
+  },
 };
 
 async function handler(request: Request): Promise<Response> {
   const { pathname, search } = new URL(request.url);
-
-  // infer the content-type from the file extension
-  const extension = extname(pathname);
-  const type = contentType(extension) ?? "text/html";
 
   // response status
   let status = 200;
 
   // response headers
   let headers: Record<string, string> = {
-    "content-type": type,
+    "content-type": "text/html",
   };
 
   let content: string | null = null;
 
-  try {
-    // TODO: enable nested layouts
-    const layout = await Deno.readTextFile(
-      `${config.pagesDir}/${config.layoutFile}`,
-    );
+  // TODO: enable nested layouts
+  const layout = await Deno.readTextFile(
+    `${config.pages.dir}/${config.pages.layout}`,
+  );
 
+  try {
     // static assets
     if (pathname.startsWith("/public/")) {
-      content = await Deno.readTextFile(`${cwd}/${pathname}`);
-      headers = {
-        ...headers,
-        // TODO: fingerprint assets for longer cache TTL + immutable
-        "cache-control": "public, max-age=900, stale-while-revalidate=900",
-      };
-
-      // early return to bypass template layout
-      return new Response(content, {
-        status,
-        headers,
-      });
+      const response = await serveFile(request, `${cwd}/${pathname}`);
+      // TODO: fingerprint assets for longer cache TTL + immutable
+      response.headers.set(
+        "cache-control",
+        "public, max-age=900, stale-while-revalidate=900",
+      );
+      return response;
     } // api (deno doc)
     else if (pathname.startsWith("/api")) {
       // parse module path from URL
@@ -63,9 +66,10 @@ async function handler(request: Request): Promise<Response> {
     else if (pathname === "/docs") {
       const versions = [];
       for await (
-        const entry of Deno.readDir(`${config.pagesDir}/${pathname}`)
+        const entry of Deno.readDir(`${config.pages.dir}${pathname}`)
       ) {
         if (entry.isDirectory) {
+          // TODO: expose all versions to frontend for a dropdown selector
           versions.push(entry);
         }
       }
@@ -81,13 +85,13 @@ async function handler(request: Request): Promise<Response> {
       // try /[route].html first
       try {
         content = await Deno.readTextFile(
-          `${config.pagesDir}/${pathname}.html`,
+          `${config.pages.dir}${pathname}.html`,
         );
       } // fallback to `/[route]/index.html`
       catch (error: unknown) {
         if ((error as Error).name === "NotFound") {
           content = await Deno.readTextFile(
-            `${config.pagesDir}/${pathname}/index.html`,
+            `${config.pages.dir}${pathname}/index.html`,
           );
         }
       }
@@ -99,11 +103,8 @@ async function handler(request: Request): Promise<Response> {
     }
 
     const payload = render(layout, {
-      // layout "props" data from child pages
-      title: content?.match(/<!-- title: (.*) -->/)?.at(1),
-      meta_description: content?.match(/<!-- meta_description: (.*) -->/)?.at(
-        1,
-      ),
+      // "props" data from child pages
+      ...parseProps(content ?? "", config.pages.props),
       content,
     });
 
@@ -112,19 +113,26 @@ async function handler(request: Request): Promise<Response> {
       headers,
     });
   } catch (error: unknown) {
-    logger.error((error as Error).message);
+    logger.error(error);
 
     // 404
     if ((error as Error).name === "NotFound") {
       status = 404;
-      content = await Deno.readTextFile(`${config.pagesDir}/404.html`);
+      content = await Deno.readTextFile(
+        `${config.pages.dir}/${config.pages["404"]}`,
+      );
     } // 500
     else {
       status = 500;
-      content = await Deno.readTextFile(`${config.pagesDir}/500.html`);
+      content = await Deno.readTextFile(
+        `${config.pages.dir}/${config.pages["500"]}`,
+      );
     }
 
-    const payload = render(content);
+    const payload = render(layout, {
+      ...parseProps(content, config.pages.props),
+      content,
+    });
 
     return new Response(payload, {
       status,
@@ -163,8 +171,30 @@ function render(
   return rendered;
 }
 
-await serve(handler, {
-  onListen: ({ hostname, port }) => {
-    logger.info(`Listening on http://${hostname}:${port}`);
-  },
-});
+function parseProps<T>(
+  content: string,
+  props: Record<keyof T, RegExp>,
+): Record<keyof T, string> {
+  // @ts-ignore: not sure how to type this tbh
+  let parsed: Record<keyof T, string> = {};
+
+  for (const key in props) {
+    if (Object.hasOwn(props, key)) {
+      // parse the actual value using the RegExp provided
+      const value = content?.match(props[key])?.at(1);
+
+      if (!value) {
+        continue;
+      }
+
+      parsed = {
+        ...parsed,
+        [key]: value,
+      };
+    }
+  }
+
+  return parsed;
+}
+
+await serve(handler);
