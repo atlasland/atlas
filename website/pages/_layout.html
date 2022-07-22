@@ -7,6 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="description" content="{{ meta_description }}" />
   <link rel="canonical" href="{{ canonical }}" />
+  <meta name="apple-mobile-web-app-title" content="Atlas Framework" />
+  <meta name="application-name" content="Atlas Framework" />
   <!-- open graph -->
   <meta property="og:type" content="{{ og_type }}" />
   <meta property="og:url" content="{{ canonical }}" />
@@ -31,7 +33,9 @@
   <link rel="manifest" href="/public/site.webmanifest">
   <meta name="msapplication-config" content="/public/browserconfig.xml">
   <meta name="msapplication-TileColor" content="#eab308">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#171717" media="(prefers-color-scheme: dark)" />
+  <meta name="msapplication-TileColor" content="#eab308" />
   <!-- tailwind -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
   <script>
