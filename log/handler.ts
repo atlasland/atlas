@@ -1,29 +1,29 @@
 import { type LogRecord } from "./record.ts";
 
 export type LogHandlerOptions = {
-  /** The logger instance name */
-  loggerName?: string;
+	/** The logger instance name */
+	loggerName?: string;
 
-  /** The log record */
-  record: LogRecord;
+	/** The log record */
+	record: LogRecord;
 };
 
 export abstract class LogHandler {
-  /** Formats a log record for the handler */
-  format({ loggerName, record }: LogHandlerOptions): string {
-    const formatted = [];
+	/** Formats a log record for the handler */
+	format({ loggerName, record }: LogHandlerOptions): string {
+		const formatted = [];
 
-    if (loggerName) {
-      formatted.push(`[${loggerName}]`);
-    }
+		if (loggerName) {
+			formatted.push(`[${loggerName}]`);
+		}
 
-    formatted.push(`${record.level}:`, record.message);
+		formatted.push(`${record.level}:`, record.message);
 
-    return formatted.join("");
-  }
+		return formatted.join("");
+	}
 
-  /** Handles a log record. Returns the formatted message by default, to enable inline logging */
-  handle({ loggerName, record }: LogHandlerOptions): string {
-    return this.format({ loggerName, record });
-  }
+	/** Handles a log record. Returns the formatted message by default, to enable inline logging */
+	handle({ loggerName, record }: LogHandlerOptions): string {
+		return this.format({ loggerName, record });
+	}
 }
