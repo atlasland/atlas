@@ -1,4 +1,4 @@
-import { asserts } from "../deps.ts";
+import { asserts } from "./deps.ts";
 import { getLevelValue, LogLevel } from "./level.ts";
 
 const { assertEquals } = asserts;

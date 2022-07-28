@@ -1,4 +1,4 @@
-import { asserts } from "../../deps.ts";
+import { asserts } from "../deps.ts";
 import { LogLevel } from "../level.ts";
 import { Logger } from "../logger.ts";
 import { LogRecord } from "../record.ts";
