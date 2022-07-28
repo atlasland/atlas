@@ -7,89 +7,89 @@ import { ConsoleHandler } from "./console.ts";
 const { assertEquals, assertStringIncludes } = asserts;
 
 class TestWriter implements Deno.WriterSync {
-  public buffer: Uint8Array = new Uint8Array();
+	public buffer: Uint8Array = new Uint8Array();
 
-  writeSync(data: Uint8Array): number {
-    this.buffer = data;
-    return data.buffer.byteLength;
-  }
+	writeSync(data: Uint8Array): number {
+		this.buffer = data;
+		return data.buffer.byteLength;
+	}
 }
 
 Deno.test("[log] console: prints the logger name", () => {
-  const writer = new TestWriter();
-  const logger = new Logger("test", {
-    handlers: [
-      new ConsoleHandler({
-        name: true,
-        target: writer,
-      }),
-    ],
-  });
+	const writer = new TestWriter();
+	const logger = new Logger("test", {
+		handlers: [
+			new ConsoleHandler({
+				name: true,
+				target: writer,
+			}),
+		],
+	});
 
-  logger.debug("this is a debug message");
+	logger.debug("this is a debug message");
 
-  assertStringIncludes(
-    new TextDecoder().decode(writer.buffer),
-    "[test]",
-  );
+	assertStringIncludes(
+		new TextDecoder().decode(writer.buffer),
+		"[test]",
+	);
 });
 
 Deno.test("[log] console: prints the timestamp for a log record", () => {
-  const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
-  const writer = new TestWriter();
-  const handler = new ConsoleHandler({
-    color: false,
-    target: writer,
-    timestamp: true,
-  });
+	const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
+	const writer = new TestWriter();
+	const handler = new ConsoleHandler({
+		color: false,
+		target: writer,
+		timestamp: true,
+	});
 
-  handler.handle({ record });
+	handler.handle({ record });
 
-  assertEquals(
-    new TextDecoder().decode(writer.buffer),
-    `${record.time} debug hello\n`,
-  );
+	assertEquals(
+		new TextDecoder().decode(writer.buffer),
+		`${record.time} debug hello\n`,
+	);
 });
 
 Deno.test("[log] console: formats a record to JSON", () => {
-  const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
-  const writer = new TestWriter();
-  const handler = new ConsoleHandler({
-    json: true,
-    target: writer,
-  });
+	const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
+	const writer = new TestWriter();
+	const handler = new ConsoleHandler({
+		json: true,
+		target: writer,
+	});
 
-  handler.handle({ record });
+	handler.handle({ record });
 
-  assertEquals(
-    new TextDecoder().decode(writer.buffer),
-    `{"level":"debug","message":"hello"}\n`,
-  );
+	assertEquals(
+		new TextDecoder().decode(writer.buffer),
+		`{"level":"debug","message":"hello"}\n`,
+	);
 });
 
 Deno.test("[log] console: colorizes a log record level", () => {
-  const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
-  const writer = new TestWriter();
-  const handler = new ConsoleHandler({
-    color: true,
-    target: writer,
-  });
+	const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
+	const writer = new TestWriter();
+	const handler = new ConsoleHandler({
+		color: true,
+		target: writer,
+	});
 
-  handler.handle({ record });
+	handler.handle({ record });
 
-  // [90mdebug[39m
-  // ^^^^---------
-  assertStringIncludes(
-    new TextDecoder().decode(writer.buffer).slice(0, 5),
-    "[90m",
-  );
+	// [90mdebug[39m
+	// ^^^^---------
+	assertStringIncludes(
+		new TextDecoder().decode(writer.buffer).slice(0, 5),
+		"[90m",
+	);
 
-  // [90mdebug[39m
-  // ---------^^^^
-  assertStringIncludes(
-    new TextDecoder().decode(writer.buffer).slice(11, 15),
-    "[39m",
-  );
+	// [90mdebug[39m
+	// ---------^^^^
+	assertStringIncludes(
+		new TextDecoder().decode(writer.buffer).slice(11, 15),
+		"[39m",
+	);
 });
 
 // TODO(gabrielizaias): figure out how to mock stdout/stderr

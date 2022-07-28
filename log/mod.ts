@@ -8,7 +8,7 @@ export * from "./handler.ts";
 export * from "./handlers/console.ts";
 
 export default new Logger("default", {
-  handlers: [
-    new ConsoleHandler(),
-  ],
+	handlers: [
+		new ConsoleHandler(),
+	],
 });

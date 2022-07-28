@@ -57,12 +57,12 @@ timestamp (in UTC) and output the message as a JSON string.
 
 ```ts
 export const logger = new Logger("default", {
-  handlers: [
-    new ConsoleHandler({
-      timestamp: true,
-      json: true,
-    }),
-  ],
+	handlers: [
+		new ConsoleHandler({
+			timestamp: true,
+			json: true,
+		}),
+	],
 });
 
 logger.debug("Hello world!");
@@ -79,24 +79,24 @@ for the up to date interface definition.
 
 ```ts
 import {
-  ConsoleHandler,
-  Logger,
-  LogMessage,
+	ConsoleHandler,
+	Logger,
+	LogMessage,
 } from "https://deno.land/x/atlas/log/mod.ts";
 
 class CustomConsoleHandler extends ConsoleHandler {
-  override format(message: LogMessage): string {
-    const formatted = super.format(message);
-    return `[custom prefix] ${formatted}`;
-  }
+	override format(message: LogMessage): string {
+		const formatted = super.format(message);
+		return `[custom prefix] ${formatted}`;
+	}
 }
 
 export const logger = new Logger("default", {
-  handlers: [
-    new CustomConsoleHandler({
-      timestamp: true,
-    }),
-  ],
+	handlers: [
+		new CustomConsoleHandler({
+			timestamp: true,
+		}),
+	],
 });
 
 logger.debug("Hello world!");
