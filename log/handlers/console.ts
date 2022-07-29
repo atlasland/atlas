@@ -104,7 +104,7 @@ export class ConsoleHandler extends LogHandler {
 					return colors.brightRed(level.toUpperCase());
 
 				case LogLevel.CRITICAL:
-					return colors.red(level);
+					return colors.magenta(level);
 
 				case LogLevel.ERROR:
 					return colors.red(level);
