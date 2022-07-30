@@ -1,18 +1,22 @@
 import { type LogLevel } from "./level.ts";
 
 export type LogRecordOptions = {
-	level: LogLevel;
-	message: string;
+	level: LogRecord["level"];
+	message: LogRecord["message"];
+	args?: unknown[];
 };
 
-export class LogRecord {
+// deno-lint-disable no-explicit-any
+export class LogRecord<T = any> {
 	readonly level: LogLevel;
-	readonly message: string;
+	readonly message: T;
+	readonly #args: LogRecordOptions["args"];
 	#datetime: Date;
 
-	constructor(options: LogRecordOptions) {
-		this.level = options.level;
-		this.message = options.message;
+	constructor({ level, message, args }: LogRecordOptions) {
+		this.level = level;
+		this.message = message;
+		this.#args = [...(args ?? [])];
 		this.#datetime = new Date();
 	}
 
