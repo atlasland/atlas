@@ -23,15 +23,15 @@ export type ConsoleHandlerOptions = {
 	 * | `Deno.stdout` | `debug`, `info`, `notice`, and `warning`      |
 	 * | `Deno.stderr` | `error`, `critical`, `alert`, and `emergency` |
 	 */
-	target?: Deno.WriterSync;
+	target?: Deno.Writer;
 };
 
 export class ConsoleHandler extends LogHandler {
-	#color: boolean;
-	#datetime: boolean;
-	#json: boolean;
-	#name: boolean;
-	#target: Deno.WriterSync;
+	#color: ConsoleHandlerOptions["color"];
+	#datetime: ConsoleHandlerOptions["datetime"];
+	#json: ConsoleHandlerOptions["json"];
+	#name: ConsoleHandlerOptions["name"];
+	#target: Required<ConsoleHandlerOptions["target"]>;
 
 	constructor(options?: ConsoleHandlerOptions) {
 		super();
@@ -42,7 +42,9 @@ export class ConsoleHandler extends LogHandler {
 		this.#datetime = options?.datetime ?? false;
 	}
 
-	override handle({ loggerName, record }: LogHandlerOptions): string {
+	override async handle(
+		{ loggerName, record }: LogHandlerOptions,
+	): Promise<string> {
 		if (
 			this.#target === Deno.stdout &&
 			getLevelValue(record.level) <= getLevelValue(LogLevel.ERROR)
@@ -52,7 +54,7 @@ export class ConsoleHandler extends LogHandler {
 
 		const formatted = this.format({ loggerName, record });
 
-		this.#target.writeSync(
+		await this.#target?.write(
 			new TextEncoder().encode(`${formatted}\n`),
 		);
 

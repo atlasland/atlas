@@ -6,10 +6,10 @@ import { ConsoleHandler } from "./console.ts";
 
 const { assertEquals, assertStringIncludes } = asserts;
 
-class TestWriter implements Deno.WriterSync {
+class TestWriter implements Deno.Writer {
 	public buffer: Uint8Array = new Uint8Array();
 
-	writeSync(data: Uint8Array): number {
+	async write(data: Uint8Array): Promise<number> {
 		this.buffer = data;
 		return data.buffer.byteLength;
 	}

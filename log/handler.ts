@@ -23,7 +23,7 @@ export abstract class LogHandler {
 	}
 
 	/** Handles a log record. Returns the formatted message by default, to enable inline logging */
-	handle({ loggerName, record }: LogHandlerOptions): string {
+	handle({ loggerName, record }: LogHandlerOptions): Promise<string> | string {
 		return this.format({ loggerName, record });
 	}
 }
