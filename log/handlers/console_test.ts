@@ -9,6 +9,7 @@ const { assertEquals, assertStringIncludes } = asserts;
 class TestWriter implements Deno.Writer {
 	public buffer: Uint8Array = new Uint8Array();
 
+	// deno-lint-ignore require-await
 	async write(data: Uint8Array): Promise<number> {
 		this.buffer = data;
 		return data.buffer.byteLength;
