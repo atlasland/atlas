@@ -9,8 +9,8 @@ type ConsoleHandlerOptions = {
 	/** Show colors on the console output. Defaults to `true` */
 	color?: boolean;
 
-	/** Add timestamp to the log message. Defaults to `false` */
-	timestamp?: boolean;
+	/** Add datetime to the log message. Defaults to `false` */
+	datetime?: boolean;
 
 	/** Format log message as JSON. Defaults to `false` */
 	json?: boolean;
@@ -28,10 +28,10 @@ type ConsoleHandlerOptions = {
 
 export class ConsoleHandler extends LogHandler {
 	#color: boolean;
+	#datetime: boolean;
 	#json: boolean;
 	#name: boolean;
 	#target: Deno.WriterSync;
-	#timestamp: boolean;
 
 	constructor(options?: ConsoleHandlerOptions) {
 		super();
@@ -39,7 +39,7 @@ export class ConsoleHandler extends LogHandler {
 		this.#json = options?.json ?? false;
 		this.#name = options?.name ?? false;
 		this.#target = options?.target ?? Deno.stdout;
-		this.#timestamp = options?.timestamp ?? false;
+		this.#datetime = options?.datetime ?? false;
 	}
 
 	override handle({ loggerName, record }: LogHandlerOptions): string {
@@ -63,7 +63,7 @@ export class ConsoleHandler extends LogHandler {
 		if (this.#json) {
 			return JSON.stringify({
 				...(this.#name && { name: loggerName }),
-				...(this.#timestamp && { timestamp: record.time }),
+				...(this.#datetime && { datetime: record.datetime }),
 				level: record.level,
 				message: record.message,
 			});
@@ -79,11 +79,11 @@ export class ConsoleHandler extends LogHandler {
 			}
 		}
 
-		if (this.#timestamp) {
+		if (this.#datetime) {
 			if (this.#color) {
-				output.push(colors.gray(record.time));
+				output.push(colors.gray(record.datetime));
 			} else {
-				output.push(record.time);
+				output.push(record.datetime);
 			}
 		}
 

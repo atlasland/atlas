@@ -85,11 +85,10 @@ Deno.test("[log] record: has a message", () => {
 	assertEquals(record.message, "Hello World!");
 });
 
-Deno.test("[log] record: has a timestamp", () => {
+Deno.test("[log] record: has a datetime in ISO", () => {
 	const record = new LogRecord({
 		level: LogLevel.EMERGENCY,
 		message: "Hello World!",
 	});
-
-	assertEquals(record.time, new Date(record.time).toISOString());
+	assertEquals(record.datetime, new Date(record.datetime).toISOString());
 });
