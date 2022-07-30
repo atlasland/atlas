@@ -2,7 +2,7 @@ import { colors } from "../../deps.ts";
 import { LogHandler, type LogHandlerOptions } from "../handler.ts";
 import { getLevelValue, LogLevel } from "../level.ts";
 
-type ConsoleHandlerOptions = {
+export type ConsoleHandlerOptions = {
 	/** Show logger name on console output. Defaults to `false` */
 	name?: boolean;
 
