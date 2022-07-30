@@ -8,16 +8,20 @@ export type LogRecordOptions = {
 export class LogRecord {
 	readonly level: LogLevel;
 	readonly message: string;
-	#timestamp: number;
+	#datetime: Date;
 
 	constructor(options: LogRecordOptions) {
 		this.level = options.level;
 		this.message = options.message;
-		this.#timestamp = Date.now();
+		this.#datetime = new Date();
 	}
 
-	/** The time the message was created in ISO format */
-	get time(): string {
-		return new Date(this.#timestamp).toISOString();
+	/** The date and time the log record was created, in ISO format */
+	get datetime(): string {
+		return new Date(this.#datetime).toISOString();
+	}
+
+	get args(): LogRecordOptions["args"] {
+		return this.#args;
 	}
 }

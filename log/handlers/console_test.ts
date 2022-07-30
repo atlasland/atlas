@@ -34,20 +34,20 @@ Deno.test("[log] console: prints the logger name", () => {
 	);
 });
 
-Deno.test("[log] console: prints the timestamp for a log record", () => {
+Deno.test("[log] console: prints the datetime for a log record", () => {
 	const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
 	const writer = new TestWriter();
 	const handler = new ConsoleHandler({
 		color: false,
 		target: writer,
-		timestamp: true,
+		datetime: true,
 	});
 
 	handler.handle({ record });
 
 	assertEquals(
 		new TextDecoder().decode(writer.buffer),
-		`${record.time} debug hello\n`,
+		`${record.datetime} debug hello\n`,
 	);
 });
 
