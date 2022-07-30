@@ -6,7 +6,7 @@ export type LogRecordOptions = {
 	args?: unknown[];
 };
 
-// deno-lint-disable no-explicit-any
+// deno-lint-ignore no-explicit-any
 export class LogRecord<T = any> {
 	readonly level: LogLevel;
 	readonly message: T;
