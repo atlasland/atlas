@@ -1,4 +1,4 @@
-import { flags } from "./deps.ts";
+import { flags } from "./log/deps.ts";
 import { default as logger } from "./log/mod.ts";
 import { type Command } from "./console/mod.ts";
 
