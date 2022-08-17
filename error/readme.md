@@ -4,8 +4,7 @@ The error module for the Atlas framework.
 
 ## Usage
 
-The module provides a set of standard errors to be used in Atlas applications.
-It also provides a `BaseError` class that can be extended to implement your
+The module provides a `BaseError` class that can be extended to implement your
 custom errors.
 
 ## Custom Errors
