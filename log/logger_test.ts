@@ -40,12 +40,12 @@ class TestHandler extends LogHandler {
 	}
 }
 
-Deno.test("[log] logger: has a name", () => {
+Deno.test("Logger instance has a name", () => {
 	const logger = new Logger("test");
 	assertEquals(logger.name, "test");
 });
 
-Deno.test("[log] logger: formats a message", () => {
+Deno.test("Logger formats a message", () => {
 	const logger = new Logger("test", {
 		handlers: [new TestHandler()],
 	});
@@ -59,7 +59,7 @@ Deno.test("[log] logger: formats a message", () => {
 	);
 });
 
-Deno.test("[log] logger: accepts multiple handlers", () => {
+Deno.test("Logger accepts multiple handlers", () => {
 	const logger = new Logger("test", {
 		handlers: [
 			new TestHandler(),
@@ -78,7 +78,7 @@ Deno.test("[log] logger: accepts multiple handlers", () => {
 });
 
 Object.values(LogLevel).forEach((level) => {
-	Deno.test(`[log] logger: logs a message with '${level}' level`, () => {
+	Deno.test(`Logger logs a message with '${level}' level`, () => {
 		const logger = new Logger("test", {
 			handlers: [new TestHandler()],
 		});

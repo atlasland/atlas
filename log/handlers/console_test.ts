@@ -9,14 +9,13 @@ const { assertEquals, assertStringIncludes } = asserts;
 class TestWriter implements Deno.Writer {
 	public buffer: Uint8Array = new Uint8Array();
 
-	// deno-lint-ignore require-await
 	async write(data: Uint8Array): Promise<number> {
 		this.buffer = data;
-		return data.buffer.byteLength;
+		return await data.buffer.byteLength;
 	}
 }
 
-Deno.test("[log] console: prints the logger name", () => {
+Deno.test("ConsoleHandler prints the logger name", () => {
 	const writer = new TestWriter();
 	const logger = new Logger("test", {
 		handlers: [
@@ -35,7 +34,7 @@ Deno.test("[log] console: prints the logger name", () => {
 	);
 });
 
-Deno.test("[log] console: prints the datetime for a log record", () => {
+Deno.test("ConsoleHandler prints the datetime for a log record", () => {
 	const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
 	const writer = new TestWriter();
 	const handler = new ConsoleHandler({
@@ -52,7 +51,7 @@ Deno.test("[log] console: prints the datetime for a log record", () => {
 	);
 });
 
-Deno.test("[log] console: formats a record to JSON", () => {
+Deno.test("ConsoleHandler formats a record to JSON", () => {
 	const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
 	const writer = new TestWriter();
 	const handler = new ConsoleHandler({
@@ -68,7 +67,7 @@ Deno.test("[log] console: formats a record to JSON", () => {
 	);
 });
 
-Deno.test("[log] console: colorizes a log record level", () => {
+Deno.test("ConsoleHandler colorizes a log record level", () => {
 	const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
 	const writer = new TestWriter();
 	const handler = new ConsoleHandler({
@@ -94,5 +93,14 @@ Deno.test("[log] console: colorizes a log record level", () => {
 });
 
 // TODO(gabrielizaias): figure out how to mock stdout/stderr
-// Deno.test("defaults to stdout for `debug`, `info`, `notice`, and `warning`", () => {});
-// Deno.test("defaults to stderr for `error`, `critical`, `alert`, and `emergency`", () => {});
+Deno.test(
+	"ConsoleHandler defaults to stdout for `debug`, `info`, `notice`, and `warning`",
+	{ ignore: true },
+	() => {},
+);
+
+Deno.test(
+	"ConsoleHandler defaults to stderr for `error`, `critical`, `alert`, and `emergency`",
+	{ ignore: true },
+	() => {},
+);
