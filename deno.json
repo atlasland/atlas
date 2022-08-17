@@ -37,8 +37,8 @@
 		}
 	},
 	"tasks": {
-		"cache": "deno cache --reload --lock=lock.json --lock-write --no-check cli.ts log/mod.ts console/mod.ts",
-		"check": "deno check cli.ts log/mod.ts console/mod.ts",
+		"cache": "deno cache --reload --lock=lock.json --lock-write --no-check cli.ts error/mod.ts log/mod.ts console/mod.ts",
+		"check": "deno check cli.ts error/mod.ts log/mod.ts console/mod.ts",
 		"dev:website": "deno run -A --watch website/main.ts",
 		"test": "deno test -A --unstable --no-check --coverage=./cov"
 	}
