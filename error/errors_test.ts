@@ -1,13 +1,14 @@
 import { assertEquals, assertThrows } from "./deps.ts";
-import { MissingArgumentError } from "./errors.ts";
+import { BaseError } from "./errors.ts";
 
 Deno.test({
-	name: "[error] MissingArgumentError",
+	name: "[error] BaseError",
 	fn: () => {
-		const error = new MissingArgumentError("argument_name");
-		assertEquals(error.message, "Missing argument: argument_name");
+		class TestError extends BaseError {}
+		const error = new TestError("test error!");
+		assertEquals(error.message, "test error!");
 		assertThrows(() => {
 			throw error;
-		}, MissingArgumentError);
+		}, Error);
 	},
 });
