@@ -6,5 +6,6 @@
   "https://deno.land/std@0.152.0/testing/_format.ts": "0d8dc79eab15b67cdc532826213bbe05bccfd276ca473a50a3fc7bbfb7260642",
   "https://deno.land/std@0.152.0/testing/_test_suite.ts": "ad453767aeb8c300878a6b7920e20370f4ce92a7b6c8e8a5d1ac2b7c14a09acb",
   "https://deno.land/std@0.152.0/testing/asserts.ts": "093735c88f52bbead7f60a1f7a97a2ce4df3c2d5fab00a46956f20b4a5793ccd",
-  "https://deno.land/std@0.152.0/testing/bdd.ts": "311d19d872088e254ead39eb7742630f7b17547ca4847dbd670821c02789a0f9"
+  "https://deno.land/std@0.152.0/testing/bdd.ts": "311d19d872088e254ead39eb7742630f7b17547ca4847dbd670821c02789a0f9",
+  "https://deno.land/std@0.152.0/testing/mock.ts": "c7cc7eae6eecbe692798bd7ce155f81a9c600865b0b2e8799068e8a85cc83b3d"
 }
