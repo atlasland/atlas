@@ -14,16 +14,6 @@ export type ConsoleHandlerOptions = {
 
 	/** Format log message as JSON. Defaults to `false` */
 	json?: boolean;
-
-	/**
-	 * Target for the log messages.
-	 *
-	 * | Default       | Level                                         |
-	 * |:--------------|:----------------------------------------------|
-	 * | `Deno.stdout` | `debug`, `info`, `notice`, and `warning`      |
-	 * | `Deno.stderr` | `error`, `critical`, `alert`, and `emergency` |
-	 */
-	target?: Deno.Writer;
 };
 
 export class ConsoleHandler extends LogHandler {
@@ -31,32 +21,25 @@ export class ConsoleHandler extends LogHandler {
 	#datetime: ConsoleHandlerOptions["datetime"];
 	#json: ConsoleHandlerOptions["json"];
 	#name: ConsoleHandlerOptions["name"];
-	#target: Required<ConsoleHandlerOptions["target"]>;
 
 	constructor(options?: ConsoleHandlerOptions) {
 		super();
 		this.#color = options?.color ?? true;
 		this.#json = options?.json ?? false;
 		this.#name = options?.name ?? false;
-		this.#target = options?.target ?? Deno.stdout;
 		this.#datetime = options?.datetime ?? false;
 	}
 
-	override async handle(
+	override handle(
 		{ loggerName, record }: LogHandlerOptions,
-	): Promise<string> {
-		if (
-			this.#target === Deno.stdout &&
-			getLevelValue(record.level) <= getLevelValue(LogLevel.ERROR)
-		) {
-			this.#target = Deno.stderr;
-		}
-
+	): string {
 		const formatted = this.format({ loggerName, record });
 
-		await this.#target?.write(
-			new TextEncoder().encode(`${formatted}\n`),
-		);
+		if (getLevelValue(record.level) <= getLevelValue(LogLevel.ERROR)) {
+			console.error(formatted);
+		} else {
+			console.log(formatted);
+		}
 
 		return formatted;
 	}
