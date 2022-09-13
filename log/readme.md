@@ -48,8 +48,8 @@ A message will be passed to each handler in turn.
 
 The `ConsoleHandler` writes log messages to the console.
 
-If the log level is `debug`, `info`, `notice` or `warning`, the message is
-written to `Deno.stdout`. Conversely, if the log level is `error`, `critical`,
+If the log level is `debug`, `info` or `notice`, the message is written to
+`Deno.stdout`. Conversely, if the log level is `warning`, `error`, `critical`,
 `alert` or `emergency`, the message is written to `Deno.stderr`.
 
 You can optionally configure the `ConsoleHandler` instance to include a

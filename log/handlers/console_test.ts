@@ -7,14 +7,14 @@ const decoder = new TextDecoder();
 	const [stdout, stderr] = await runFixture("level");
 
 	// stdout
-	for (const level of ["debug", "info", "notice", "warning"]) {
+	for (const level of ["debug", "info", "notice"]) {
 		Deno.test(`ConsoleHandler writes to stdout for \`${level}\` level`, () => {
 			assertStringIncludes(stdout, level);
 		});
 	}
 
 	// stderr
-	for (const level of ["error", "critical", "emergency"]) {
+	for (const level of ["warning", "error", "critical", "emergency"]) {
 		Deno.test(`ConsoleHandler writes to stderr for \`${level}\` level`, () => {
 			assertStringIncludes(stderr, level);
 		});

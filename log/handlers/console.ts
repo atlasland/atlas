@@ -37,6 +37,10 @@ export class ConsoleHandler extends LogHandler {
 
 		if (getLevelValue(record.level) <= getLevelValue(LogLevel.ERROR)) {
 			console.error(formatted);
+		} else if (record.level === LogLevel.WARNING) {
+			console.warn(formatted);
+		} else if (record.level === LogLevel.DEBUG) {
+			console.debug(formatted);
 		} else {
 			console.log(formatted);
 		}
