@@ -9,25 +9,25 @@ export type ConsoleHandlerOptions = {
 	/** Show colors on the console output. Defaults to `true` */
 	color?: boolean;
 
-	/** Add datetime to the log message. Defaults to `false` */
-	datetime?: boolean;
+	/** Add timestamp to the log message. Defaults to `false` */
+	timestamp?: boolean;
 
 	/** Format log message as JSON. Defaults to `false` */
 	json?: boolean;
 };
 
 export class ConsoleHandler extends LogHandler {
-	#color: ConsoleHandlerOptions["color"];
-	#datetime: ConsoleHandlerOptions["datetime"];
-	#json: ConsoleHandlerOptions["json"];
-	#name: ConsoleHandlerOptions["name"];
+	#color: boolean;
+	#timestamp: boolean;
+	#json: boolean;
+	#name: boolean;
 
 	constructor(options?: ConsoleHandlerOptions) {
 		super();
 		this.#color = options?.color ?? true;
 		this.#json = options?.json ?? false;
 		this.#name = options?.name ?? false;
-		this.#datetime = options?.datetime ?? false;
+		this.#timestamp = options?.timestamp ?? false;
 	}
 
 	override handle(
@@ -48,7 +48,7 @@ export class ConsoleHandler extends LogHandler {
 		if (this.#json) {
 			return JSON.stringify({
 				...(this.#name && { name: loggerName }),
-				...(this.#datetime && { datetime: record.datetime }),
+				...(this.#timestamp && { timestamp: record.timestamp }),
 				level: record.level,
 				message: record.message,
 			});
@@ -64,11 +64,11 @@ export class ConsoleHandler extends LogHandler {
 			}
 		}
 
-		if (this.#datetime) {
+		if (this.#timestamp) {
 			if (this.#color) {
-				output.push(colors.gray(record.datetime));
+				output.push(colors.gray(record.timestamp));
 			} else {
-				output.push(record.datetime);
+				output.push(record.timestamp);
 			}
 		}
 
