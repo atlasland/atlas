@@ -90,5 +90,5 @@ Deno.test("LogRecord has a datetime in ISO format", () => {
 		level: LogLevel.EMERGENCY,
 		message: "Hello World!",
 	});
-	assertEquals(record.datetime, new Date(record.datetime).toISOString());
+	assertEquals(record.timestamp, new Date(record.timestamp).toISOString());
 });
