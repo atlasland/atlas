@@ -2,7 +2,7 @@ import { type LogLevel } from "./level.ts";
 
 export type LogRecordOptions = {
 	level: LogRecord["level"];
-	message: LogRecord["message"];
+	message?: LogRecord["message"];
 	args?: unknown[];
 };
 
@@ -10,19 +10,19 @@ export type LogRecordOptions = {
 export class LogRecord<T = any> {
 	readonly level: LogLevel;
 	readonly message: T;
-	readonly #args: LogRecordOptions["args"];
-	#datetime: Date;
+	readonly #args: unknown[];
+	#timestamp: string;
 
 	constructor({ level, message, args }: LogRecordOptions) {
 		this.level = level;
 		this.message = message;
 		this.#args = [...(args ?? [])];
-		this.#datetime = new Date();
+		this.#timestamp = new Date().toISOString();
 	}
 
-	/** The date and time the log record was created, in ISO format */
-	get datetime(): string {
-		return new Date(this.#datetime).toISOString();
+	/** The timestamp log record was created, in ISO format */
+	get timestamp(): string {
+		return this.#timestamp;
 	}
 
 	get args(): LogRecordOptions["args"] {

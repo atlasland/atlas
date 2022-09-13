@@ -20,7 +20,7 @@ export class Logger {
 
 	/** Logs a message with emergency level */
 	emergency(
-		message: LogRecord["message"],
+		message?: LogRecord["message"],
 		...args: LogRecordOptions["args"][]
 	): void {
 		this.#log(LogLevel.EMERGENCY, message, ...args);
@@ -28,7 +28,7 @@ export class Logger {
 
 	/** Logs a message with alert level */
 	alert(
-		message: LogRecord["message"],
+		message?: LogRecord["message"],
 		...args: LogRecordOptions["args"][]
 	): void {
 		this.#log(LogLevel.ALERT, message, ...args);
@@ -36,7 +36,7 @@ export class Logger {
 
 	/** Logs a message with critical level */
 	critical(
-		message: LogRecord["message"],
+		message?: LogRecord["message"],
 		...args: LogRecordOptions["args"][]
 	): void {
 		this.#log(LogLevel.CRITICAL, message, ...args);
@@ -44,7 +44,7 @@ export class Logger {
 
 	/** Logs a message with error level */
 	error(
-		message: LogRecord["message"],
+		message?: LogRecord["message"],
 		...args: LogRecordOptions["args"][]
 	): void {
 		this.#log(LogLevel.ERROR, message, ...args);
@@ -52,7 +52,7 @@ export class Logger {
 
 	/** Logs a message with warning level */
 	warning(
-		message: LogRecord["message"],
+		message?: LogRecord["message"],
 		...args: LogRecordOptions["args"][]
 	): void {
 		this.#log(LogLevel.WARNING, message, ...args);
@@ -60,7 +60,7 @@ export class Logger {
 
 	/** Logs a message with notice level */
 	notice(
-		message: LogRecord["message"],
+		message?: LogRecord["message"],
 		...args: LogRecordOptions["args"][]
 	): void {
 		this.#log(LogLevel.NOTICE, message, ...args);
@@ -68,7 +68,7 @@ export class Logger {
 
 	/** Logs a message with info level */
 	info(
-		message: LogRecord["message"],
+		message?: LogRecord["message"],
 		...args: LogRecordOptions["args"][]
 	): void {
 		this.#log(LogLevel.INFO, message, ...args);
@@ -76,7 +76,7 @@ export class Logger {
 
 	/** Logs a message with debug level */
 	debug(
-		message: LogRecord["message"],
+		message?: LogRecord["message"],
 		...args: LogRecordOptions["args"][]
 	): void {
 		this.#log(LogLevel.DEBUG, message, ...args);
@@ -84,7 +84,7 @@ export class Logger {
 
 	#log(
 		level: LogLevel,
-		message: LogRecord["message"],
+		message?: LogRecord["message"],
 		...args: LogRecordOptions["args"][]
 	): void {
 		const record = new LogRecord({ level, message, args });

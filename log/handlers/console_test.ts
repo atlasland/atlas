@@ -1,106 +1,73 @@
 import { asserts } from "../deps.ts";
-import { LogLevel } from "../level.ts";
-import { Logger } from "../logger.ts";
-import { LogRecord } from "../record.ts";
-import { ConsoleHandler } from "./console.ts";
 
 const { assertEquals, assertStringIncludes } = asserts;
+const decoder = new TextDecoder();
 
-class TestWriter implements Deno.Writer {
-	public buffer: Uint8Array = new Uint8Array();
+{
+	const [stdout, stderr] = await runFixture("level");
 
-	async write(data: Uint8Array): Promise<number> {
-		this.buffer = data;
-		return await data.buffer.byteLength;
+	// stdout
+	for (const level of ["debug", "info", "notice"]) {
+		Deno.test(`ConsoleHandler writes to stdout for \`${level}\` level`, () => {
+			assertStringIncludes(stdout, level);
+		});
+	}
+
+	// stderr
+	for (const level of ["warning", "error", "critical", "emergency"]) {
+		Deno.test(`ConsoleHandler writes to stderr for \`${level}\` level`, () => {
+			assertStringIncludes(stderr, level);
+		});
 	}
 }
 
-Deno.test("ConsoleHandler prints the logger name", () => {
-	const writer = new TestWriter();
-	const logger = new Logger("test", {
-		handlers: [
-			new ConsoleHandler({
-				name: true,
-				target: writer,
-			}),
-		],
-	});
+Deno.test("ConsoleHandler prints the logger name", async () => {
+	const [stdout] = await runFixture("name");
+	assertStringIncludes(stdout.split("\n").at(0) ?? "", "[name]");
+});
 
-	logger.debug("this is a debug message");
+Deno.test("ConsoleHandler prints the timestamp for a log record", async () => {
+	const [stdout] = await runFixture("timestamp");
 
 	assertStringIncludes(
-		new TextDecoder().decode(writer.buffer),
-		"[test]",
+		stdout.split("\n").at(0) ?? "",
+		new Date().toISOString().slice(0, -4),
 	);
 });
 
-Deno.test("ConsoleHandler prints the datetime for a log record", () => {
-	const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
-	const writer = new TestWriter();
-	const handler = new ConsoleHandler({
-		color: false,
-		target: writer,
-		datetime: true,
-	});
-
-	handler.handle({ record });
-
-	assertEquals(
-		new TextDecoder().decode(writer.buffer),
-		`${record.datetime} debug hello\n`,
-	);
+Deno.test("ConsoleHandler formats a record to JSON", async () => {
+	const [stdout] = await runFixture("json");
+	assertEquals(stdout, `{"level":"debug","message":"hello"}\n`);
 });
 
-Deno.test("ConsoleHandler formats a record to JSON", () => {
-	const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
-	const writer = new TestWriter();
-	const handler = new ConsoleHandler({
-		json: true,
-		target: writer,
-	});
-
-	handler.handle({ record });
-
-	assertEquals(
-		new TextDecoder().decode(writer.buffer),
-		`{"level":"debug","message":"hello"}\n`,
-	);
-});
-
-Deno.test("ConsoleHandler colorizes a log record level", () => {
-	const record = new LogRecord({ level: LogLevel.DEBUG, message: "hello" });
-	const writer = new TestWriter();
-	const handler = new ConsoleHandler({
-		color: true,
-		target: writer,
-	});
-
-	handler.handle({ record });
+Deno.test("ConsoleHandler colorizes a log record level", async () => {
+	const [stdout] = await runFixture("color");
 
 	// [90mdebug[39m
 	// ^^^^---------
-	assertStringIncludes(
-		new TextDecoder().decode(writer.buffer).slice(0, 5),
-		"[90m",
-	);
+	assertStringIncludes(stdout, "[90m");
 
 	// [90mdebug[39m
 	// ---------^^^^
-	assertStringIncludes(
-		new TextDecoder().decode(writer.buffer).slice(11, 15),
-		"[39m",
-	);
+	assertStringIncludes(stdout.slice(11, 15), "[39m");
 });
 
-// TODO(gabrielizaias): figure out how to mock stdout/stderr
-Deno.test(
-	"ConsoleHandler defaults to stdout for `debug`, `info`, `notice`, and `warning`",
-	{ ignore: true },
-	() => {},
-);
+/** run a test fixture on a sub-process to and caputure the output for assertions */
+async function runFixture(fixture: string): Promise<[string, string]> {
+	const process = Deno.run({
+		cmd: [
+			"deno",
+			"run",
+			`./log/handlers/console_test.fixture.${fixture}.ts`,
+		],
+		stdout: "piped",
+		stderr: "piped",
+	});
 
-Deno.test(
-	"ConsoleHandler defaults to stderr for `error`, `critical`, `alert`, and `emergency`",
-	{ ignore: true },
-	() => {},
-);
+	const stdout = decoder.decode(await process.output());
+	const stderr = decoder.decode(await process.stderrOutput());
+
+	process.close();
+
+	return [stdout, stderr];
+}
