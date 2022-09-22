@@ -23,21 +23,23 @@ const decoder = new TextDecoder();
 
 Deno.test("ConsoleHandler prints the logger name", async () => {
 	const [stdout] = await runFixture("name");
-	assertStringIncludes(stdout.split("\n").at(0) ?? "", "[name]");
+	assertStringIncludes(getLine(stdout), "[name]");
 });
 
 Deno.test("ConsoleHandler prints the timestamp for a log record", async () => {
 	const [stdout] = await runFixture("timestamp");
-
 	assertStringIncludes(
-		stdout.split("\n").at(0) ?? "",
-		new Date().toISOString().slice(0, -4),
+		getLine(stdout),
+		new Date().toISOString().slice(0, -5),
 	);
 });
 
 Deno.test("ConsoleHandler formats a record to JSON", async () => {
 	const [stdout] = await runFixture("json");
-	assertEquals(stdout, `{"level":"debug","message":"hello"}\n`);
+	assertEquals(
+		getLine(stdout),
+		`{"level":"debug","message":["hello","there"]}`,
+	);
 });
 
 Deno.test("ConsoleHandler colorizes a log record level", async () => {
@@ -70,4 +72,9 @@ async function runFixture(fixture: string): Promise<[string, string]> {
 	process.close();
 
 	return [stdout, stderr];
+}
+
+/** retrieve a given line from a process output */
+function getLine(output: string, line = 0): string {
+	return output.split("\n").at(line) ?? "";
 }

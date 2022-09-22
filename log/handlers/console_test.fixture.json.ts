@@ -9,4 +9,4 @@ const logger = new Logger("json", {
 	],
 });
 
-logger.debug("hello");
+logger.debug("hello", "there");

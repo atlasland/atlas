@@ -1,6 +1,6 @@
 import { type LogHandler } from "./handler.ts";
 import { LogLevel } from "./level.ts";
-import { LogRecord, type LogRecordOptions } from "./record.ts";
+import { LogRecord } from "./record.ts";
 
 type LoggerOptions = {
 	handlers?: LogHandler[];
@@ -18,76 +18,51 @@ export class Logger {
 		this.handlers = options?.handlers ?? [];
 	}
 
-	/** Logs a message with emergency level */
-	emergency(
-		message?: LogRecord["message"],
-		...args: LogRecordOptions["args"][]
-	): void {
-		this.#log(LogLevel.EMERGENCY, message, ...args);
+	/** Logs a message with `emergency` level */
+	emergency(...message: LogRecord["message"]) {
+		this.#log(LogLevel.EMERGENCY, ...message);
 	}
 
-	/** Logs a message with alert level */
-	alert(
-		message?: LogRecord["message"],
-		...args: LogRecordOptions["args"][]
-	): void {
-		this.#log(LogLevel.ALERT, message, ...args);
+	/** Logs a message with `alert` level */
+	alert(...message: LogRecord["message"]) {
+		this.#log(LogLevel.ALERT, ...message);
 	}
 
-	/** Logs a message with critical level */
-	critical(
-		message?: LogRecord["message"],
-		...args: LogRecordOptions["args"][]
-	): void {
-		this.#log(LogLevel.CRITICAL, message, ...args);
+	/** Logs a message with `critical` level */
+	critical(...message: LogRecord["message"]) {
+		this.#log(LogLevel.CRITICAL, ...message);
 	}
 
-	/** Logs a message with error level */
-	error(
-		message?: LogRecord["message"],
-		...args: LogRecordOptions["args"][]
-	): void {
-		this.#log(LogLevel.ERROR, message, ...args);
+	/** Logs a message with `error` level */
+	error(...message: LogRecord["message"]) {
+		this.#log(LogLevel.ERROR, ...message);
 	}
 
-	/** Logs a message with warning level */
-	warning(
-		message?: LogRecord["message"],
-		...args: LogRecordOptions["args"][]
-	): void {
-		this.#log(LogLevel.WARNING, message, ...args);
+	/** Logs a message with `warning` level */
+	warning(...message: LogRecord["message"]) {
+		this.#log(LogLevel.WARNING, ...message);
 	}
 
-	/** Logs a message with notice level */
-	notice(
-		message?: LogRecord["message"],
-		...args: LogRecordOptions["args"][]
-	): void {
-		this.#log(LogLevel.NOTICE, message, ...args);
+	/** Logs a message with `notice` level */
+	notice(...message: LogRecord["message"]) {
+		this.#log(LogLevel.NOTICE, ...message);
 	}
 
-	/** Logs a message with info level */
-	info(
-		message?: LogRecord["message"],
-		...args: LogRecordOptions["args"][]
-	): void {
-		this.#log(LogLevel.INFO, message, ...args);
+	/** Logs a message with `info` level */
+	info(...message: LogRecord["message"]) {
+		this.#log(LogLevel.INFO, ...message);
 	}
 
-	/** Logs a message with debug level */
-	debug(
-		message?: LogRecord["message"],
-		...args: LogRecordOptions["args"][]
-	): void {
-		this.#log(LogLevel.DEBUG, message, ...args);
+	/** Logs a message with `debug` level */
+	debug(...message: LogRecord["message"]) {
+		this.#log(LogLevel.DEBUG, ...message);
 	}
 
 	#log(
 		level: LogLevel,
-		message?: LogRecord["message"],
-		...args: LogRecordOptions["args"][]
-	): void {
-		const record = new LogRecord({ level, message, args });
+		...message: LogRecord["message"]
+	) {
+		const record = new LogRecord({ level, message });
 
 		for (const handler of this.handlers) {
 			handler.handle({ loggerName: this.name, record });

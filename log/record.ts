@@ -1,31 +1,25 @@
 import { type LogLevel } from "./level.ts";
 
 export type LogRecordOptions = {
-	level: LogRecord["level"];
+	level: LogLevel;
 	message?: LogRecord["message"];
-	args?: unknown[];
 };
 
-// deno-lint-ignore no-explicit-any
-export class LogRecord<T = any> {
+export class LogRecord {
 	readonly level: LogLevel;
-	readonly message: T;
-	readonly #args: unknown[];
+	// deno-lint-ignore no-explicit-any
+	readonly message?: any;
+
 	#timestamp: string;
 
-	constructor({ level, message, args }: LogRecordOptions) {
+	constructor({ level, message }: LogRecordOptions) {
 		this.level = level;
 		this.message = message;
-		this.#args = [...(args ?? [])];
 		this.#timestamp = new Date().toISOString();
 	}
 
 	/** The timestamp log record was created, in ISO format */
 	get timestamp(): string {
 		return this.#timestamp;
-	}
-
-	get args(): LogRecordOptions["args"] {
-		return this.#args;
 	}
 }
