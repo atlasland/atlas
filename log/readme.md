@@ -67,7 +67,7 @@ export const logger = new Logger("default", {
 
 logger.debug("Hello world!");
 // outputs:
-// {"timestamp":"2022-04-04T21:56:14.464Z","level":"debug","message":"Hello world!"}
+// {"timestamp":"2022-04-04T21:56:14.464Z","level":"debug","message":["Hello world!"]}
 ```
 
 ### Custom
