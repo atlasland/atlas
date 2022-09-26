@@ -32,30 +32,32 @@ export class ConsoleHandler extends LogHandler {
 
 	override handle(
 		{ loggerName, record }: LogHandlerOptions,
-	): string {
+		// deno-lint-ignore no-explicit-any
+	): any {
 		const formatted = this.format({ loggerName, record });
 
 		if (getLevelValue(record.level) <= getLevelValue(LogLevel.ERROR)) {
-			console.error(formatted);
+			console.error(...formatted);
 		} else if (record.level === LogLevel.WARNING) {
-			console.warn(formatted);
+			console.warn(...formatted);
 		} else if (record.level === LogLevel.DEBUG) {
-			console.debug(formatted);
+			console.debug(...formatted);
 		} else {
-			console.log(formatted);
+			console.log(...formatted);
 		}
 
 		return formatted;
 	}
 
-	override format({ loggerName, record }: LogHandlerOptions): string {
+	// deno-lint-ignore no-explicit-any
+	override format({ loggerName, record }: LogHandlerOptions): any {
 		if (this.#json) {
-			return JSON.stringify({
+			return [JSON.stringify({
 				...(this.#name && { name: loggerName }),
 				...(this.#timestamp && { timestamp: record.timestamp }),
 				level: record.level,
 				message: record.message,
-			});
+			})];
 		}
 
 		const output = [];
@@ -78,9 +80,9 @@ export class ConsoleHandler extends LogHandler {
 
 		const level = this.#formatLevel(record.level);
 
-		output.push(level, record.message);
+		output.push(level, ...record.message);
 
-		return output.join(" ");
+		return output;
 	}
 
 	#formatLevel(level: LogLevel): string {
