@@ -1,12 +1,12 @@
 import { Logger } from "../logger.ts";
 import { ConsoleHandler } from "./console.ts";
 
-const logger = new Logger("json", {
+const logger = new Logger("object", {
 	handlers: [
 		new ConsoleHandler({
-			json: true,
+			color: false,
 		}),
 	],
 });
 
-logger.debug("hello", { key: "value" }, [1, 2, 3], null, true);
+logger.debug({ key: "value" });

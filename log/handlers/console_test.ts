@@ -34,11 +34,16 @@ Deno.test("ConsoleHandler prints the timestamp for a log record", async () => {
 	);
 });
 
+Deno.test("ConsoleHandler prints stringified objects", async () => {
+	const [stdout] = await runFixture("object");
+	assertEquals(getLine(stdout), `debug { key: "value" }`);
+});
+
 Deno.test("ConsoleHandler formats a record to JSON", async () => {
 	const [stdout] = await runFixture("json");
 	assertEquals(
 		getLine(stdout),
-		`{"level":"debug","message":["hello","there"]}`,
+		`{"level":"debug","message":["hello",{"key":"value"},[1,2,3],null,true]}`,
 	);
 });
 
