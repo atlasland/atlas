@@ -1,8 +1,6 @@
-import { asserts } from "./deps.ts";
+import { assertEquals } from "../deps_dev.ts";
 import { LogLevel } from "./level.ts";
 import { LogRecord } from "./record.ts";
-
-const { assertEquals } = asserts;
 
 Deno.test("LogRecord has a 'debug' level", () => {
 	const record = new LogRecord({
