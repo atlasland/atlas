@@ -1,2 +1,12 @@
-export * as colors from "https://deno.land/std@0.159.0/fmt/colors.ts";
-export * as flags from "https://deno.land/std@0.159.0/flags/mod.ts";
+export {
+	bgRed,
+	blue,
+	brightRed,
+	cyan,
+	gray,
+	magenta,
+	red,
+	white,
+	yellow,
+} from "https://deno.land/std@0.159.0/fmt/colors.ts";
+export { parse } from "https://deno.land/std@0.159.0/flags/mod.ts";

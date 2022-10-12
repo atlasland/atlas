@@ -1,4 +1,14 @@
-import { colors } from "../deps.ts";
+import {
+	bgRed,
+	blue,
+	brightRed,
+	cyan,
+	gray,
+	magenta,
+	red,
+	white,
+	yellow,
+} from "../deps.ts";
 import { LogHandler, type LogHandlerOptions } from "../handler.ts";
 import { getLevelValue, LogLevel } from "../level.ts";
 
@@ -64,7 +74,7 @@ export class ConsoleHandler extends LogHandler {
 
 		if (this.#name && loggerName) {
 			if (this.#color) {
-				output.push(colors.gray(`[${loggerName}]`));
+				output.push(gray(`[${loggerName}]`));
 			} else {
 				output.push(`[${loggerName}]`);
 			}
@@ -72,7 +82,7 @@ export class ConsoleHandler extends LogHandler {
 
 		if (this.#timestamp) {
 			if (this.#color) {
-				output.push(colors.gray(record.timestamp));
+				output.push(gray(record.timestamp));
 			} else {
 				output.push(record.timestamp);
 			}
@@ -89,28 +99,28 @@ export class ConsoleHandler extends LogHandler {
 		if (this.#color) {
 			switch (level) {
 				case LogLevel.EMERGENCY:
-					return colors.bgRed(colors.white(` ${level.toUpperCase()} `));
+					return bgRed(white(` ${level.toUpperCase()} `));
 
 				case LogLevel.ALERT:
-					return colors.brightRed(level.toUpperCase());
+					return brightRed(level.toUpperCase());
 
 				case LogLevel.CRITICAL:
-					return colors.magenta(level);
+					return magenta(level);
 
 				case LogLevel.ERROR:
-					return colors.red(level);
+					return red(level);
 
 				case LogLevel.WARNING:
-					return colors.yellow(level);
+					return yellow(level);
 
 				case LogLevel.NOTICE:
-					return colors.cyan(level);
+					return cyan(level);
 
 				case LogLevel.INFO:
-					return colors.blue(level);
+					return blue(level);
 
 				case LogLevel.DEBUG:
-					return colors.gray(level);
+					return gray(level);
 			}
 		}
 
