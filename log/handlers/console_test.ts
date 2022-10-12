@@ -7,25 +7,25 @@ const decoder = new TextDecoder();
 
 	// stdout
 	for (const level of ["debug", "info", "notice"]) {
-		Deno.test(`ConsoleHandler writes to stdout for \`${level}\` level`, () => {
+		Deno.test(`[log/handlers] ConsoleHandler writes to stdout for \`${level}\` level`, () => {
 			assertStringIncludes(stdout, level);
 		});
 	}
 
 	// stderr
 	for (const level of ["warning", "error", "critical", "emergency"]) {
-		Deno.test(`ConsoleHandler writes to stderr for \`${level}\` level`, () => {
+		Deno.test(`[log/handlers] ConsoleHandler writes to stderr for \`${level}\` level`, () => {
 			assertStringIncludes(stderr, level);
 		});
 	}
 }
 
-Deno.test("ConsoleHandler prints the logger name", async () => {
+Deno.test("[log/handlers] ConsoleHandler prints the logger name", async () => {
 	const [stdout] = await runFixture("name");
 	assertStringIncludes(getLine(stdout), "[name]");
 });
 
-Deno.test("ConsoleHandler prints the timestamp for a log record", async () => {
+Deno.test("[log/handlers] ConsoleHandler prints the timestamp for a log record", async () => {
 	const [stdout] = await runFixture("timestamp");
 	assertStringIncludes(
 		getLine(stdout),
@@ -33,12 +33,12 @@ Deno.test("ConsoleHandler prints the timestamp for a log record", async () => {
 	);
 });
 
-Deno.test("ConsoleHandler prints stringified objects", async () => {
+Deno.test("[log/handlers] ConsoleHandler prints stringified objects", async () => {
 	const [stdout] = await runFixture("object");
 	assertEquals(getLine(stdout), `debug { key: "value" }`);
 });
 
-Deno.test("ConsoleHandler formats a record to JSON", async () => {
+Deno.test("[log/handlers] ConsoleHandler formats a record to JSON", async () => {
 	const [stdout] = await runFixture("json");
 	assertEquals(
 		getLine(stdout),
@@ -46,7 +46,7 @@ Deno.test("ConsoleHandler formats a record to JSON", async () => {
 	);
 });
 
-Deno.test("ConsoleHandler colorizes a log record level", async () => {
+Deno.test("[log/handlers] ConsoleHandler colorizes a log record level", async () => {
 	const [stdout] = await runFixture("color");
 
 	// [90mdebug[39m
@@ -58,7 +58,7 @@ Deno.test("ConsoleHandler colorizes a log record level", async () => {
 	assertStringIncludes(stdout.slice(11, 15), "[39m");
 });
 
-/** run a test fixture on a sub-process to and caputure the output for assertions */
+/** Runs a test fixture on a sub-process and caputure the output for assertions */
 async function runFixture(fixture: string): Promise<[string, string]> {
 	const process = Deno.run({
 		cmd: [
@@ -78,7 +78,7 @@ async function runFixture(fixture: string): Promise<[string, string]> {
 	return [stdout, stderr];
 }
 
-/** retrieve a given line from a process output */
+/** Retrieves a given line from a process output */
 function getLine(output: string, line = 0): string {
 	return output.split("\n").at(line) ?? "";
 }
