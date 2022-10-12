@@ -1,6 +1,6 @@
 import { assertEquals } from "../deps_dev.ts";
 import { Status, STATUS_TEXT } from "./deps.ts";
-import { Method, type RouteMap, Router } from "./router.ts";
+import { Method, Params, type RouteMap, Router } from "./router.ts";
 
 Deno.test("[http/router] router.register() registers a new handler", () => {
 	const router = new Router();
@@ -72,9 +72,9 @@ Deno.test("[http/router] Router.toParams() returns a key-value object of URL par
 });
 
 Deno.test("[http/router] router.handler() returns a Response", async () => {
-	const request = new Request(new URL("/", "http://localhost:8000"));
 	const data = new Response("ok", { statusText: STATUS_TEXT[Status.OK] });
 	const router = new Router().get("/", () => data);
+	const request = new Request(new URL("/", "http://localhost:8000"));
 
 	const response = await router.handler(request);
 
@@ -90,9 +90,9 @@ Deno.test("[http/router] router.handler() returns a Response", async () => {
 });
 
 Deno.test("[http/router] router.handler() returns an object response as JSON", async () => {
-	const request = new Request(new URL("/", "http://localhost:8000"));
 	const data = { message: "ok" };
 	const router = new Router().get("/", () => data);
+	const request = new Request(new URL("/", "http://localhost:8000"));
 
 	const response = await router.handler(request);
 
@@ -101,12 +101,41 @@ Deno.test("[http/router] router.handler() returns an object response as JSON", a
 });
 
 Deno.test("[http/router] router.handler() handles thrown HTTP statuses", async () => {
-	const request = new Request(new URL("/", "http://localhost:8000"));
 	const router = new Router().get("/", () => {
 		throw Status.Forbidden;
 	});
+	const request = new Request(new URL("/", "http://localhost:8000"));
 
 	const response = await router.handler(request);
 
 	assertEquals(response.status, Status.Forbidden);
+});
+
+Deno.test("[http/router] passes URL params to handler context", async () => {
+	const outer: Params = {};
+	const router = new Router()
+		.get("/:id", (_, { params: { id } }) => {
+			outer.id = id!;
+			return {};
+		})
+		.get(
+			"/:category/:subcategory",
+			(_, { params: { category, subcategory } }) => {
+				outer.category = category!;
+				outer.subcategory = subcategory!;
+				return {};
+			},
+		);
+
+	const request1 = new Request(new URL("/12345", "http://localhost:8000"));
+	const request2 = new Request(
+		new URL("/computers/laptops", "http://localhost:8000"),
+	);
+
+	await router.handler(request1);
+	await router.handler(request2);
+
+	assertEquals(outer.id, "12345");
+	assertEquals(outer.category, "computers");
+	assertEquals(outer.subcategory, "laptops");
 });
