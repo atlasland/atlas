@@ -1,5 +1,5 @@
 import { assertEquals } from "../deps_dev.ts";
-import { ConnInfo, logger, Status, STATUS_TEXT } from "./deps.ts";
+import { Status, STATUS_TEXT } from "./deps.ts";
 import { Method, type RouteMap, Router } from "./router.ts";
 
 Deno.test("[http/router] router.register() registers a new handler", () => {
@@ -71,37 +71,20 @@ Deno.test("[http/router] Router.toParams() returns a key-value object of URL par
 	}
 });
 
-Deno.test(
-	"[http/router] router.handler() handles an incoming request with the provided Handler fn",
-	{ ignore: true },
-	async () => {
-		const request = new Request(new URL("/", "http://localhost:8000"), {
-			method: Method.GET,
-		});
-		const response = new Response("ok", {
-			status: Status.OK,
-			statusText: STATUS_TEXT[Status.OK],
-			headers: { "content-type": "text/plain; charset=UTF-8" },
-		});
-		const router = new Router().get("/", () => response);
-		const connection: ConnInfo = {
-			localAddr: {
-				hostname: "localhost",
-				port: 8000,
-				transport: "tcp",
-			},
-			remoteAddr: {
-				hostname: "localhost",
-				port: 8000,
-				transport: "tcp",
-			},
-		};
+Deno.test("[http/router] router.handler() returns a Response", async () => {
+	const request = new Request(new URL("/", "http://localhost:8000"));
+	const data = new Response("ok", { statusText: STATUS_TEXT[Status.OK] });
+	const router = new Router().get("/", () => data);
 
-		const expectation = await router.handler(request, connection);
+	const response = await router.handler(request);
 
-		logger.debug(expectation);
-		logger.debug(response);
-
-		assertEquals(expectation, response);
-	},
-);
+	assertEquals(response.url, data.url);
+	assertEquals(response.type, data.type);
+	assertEquals(response.headers.entries(), data.headers.entries());
+	assertEquals(response.body, data.body);
+	assertEquals(response.bodyUsed, data.bodyUsed);
+	assertEquals(response.ok, data.ok);
+	assertEquals(response.redirected, data.redirected);
+	assertEquals(response.status, data.status);
+	assertEquals(response.statusText, data.statusText);
+});
