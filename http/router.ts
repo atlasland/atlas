@@ -36,7 +36,7 @@ export type ErrorHandler<P = Params> = (
 ) => Response | Promise<Response>;
 
 /** The Request context */
-export type Context<P = Params> = ConnInfo & {
+export type Context<P = Params> = Partial<ConnInfo> & {
 	/** The path parameters found in the URL pathname */
 	params: P;
 };
@@ -122,7 +122,7 @@ export class Router {
 	}
 
 	/** Handles an incoming request */
-	async handler(request: Request, conection: ConnInfo) {
+	async handler(request: Request, conection?: ConnInfo) {
 		const { method } = request;
 		const { pathname, search } = new URL(request.url);
 
@@ -137,12 +137,17 @@ export class Router {
 		try {
 			const result = await handler(request, context);
 
-			// TODO(gabrielizaias): handle return object, parse into JSON
-
 			if (result instanceof Response) {
 				status = result.status;
 				body = result.body;
 				headers = new Headers(result.headers);
+			} else {
+				try {
+					body = JSON.stringify(result);
+					headers.set("content-type", "application/json");
+				} catch (_error) {
+					// do nothing?
+				}
 			}
 		} catch (error) {
 			const result = await this.errorHandler(error, request, context);

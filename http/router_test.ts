@@ -89,6 +89,17 @@ Deno.test("[http/router] router.handler() returns a Response", async () => {
 	assertEquals(response.statusText, data.statusText);
 });
 
+Deno.test("[http/router] router.handler() returns an object response as JSON", async () => {
+	const request = new Request(new URL("/", "http://localhost:8000"));
+	const data = { message: "ok" };
+	const router = new Router().get("/", () => data);
+
+	const response = await router.handler(request);
+
+	assertEquals(response.headers.get("content-type"), "application/json");
+	assertEquals(await response.json(), data);
+});
+
 Deno.test("[http/router] router.handler() handles thrown HTTP statuses", async () => {
 	const request = new Request(new URL("/", "http://localhost:8000"));
 	const router = new Router().get("/", () => {

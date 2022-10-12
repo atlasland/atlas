@@ -3,17 +3,11 @@ import { Router, start } from "../../mod.ts";
 const router = new Router();
 
 router.get("/", () => {
-	return new Response(
-		JSON.stringify({ message: "A GET handler" }),
-		{ headers: { "content-type": "application/json" } },
-	);
+	return { message: "A GET handler" };
 });
 
 router.post("/", () => {
-	return new Response(
-		JSON.stringify({ message: "A POST handler" }),
-		{ headers: { "content-type": "application/json" } },
-	);
+	return { message: "A POST handler" };
 });
 
 await start(router);
