@@ -1,10 +1,8 @@
-import { asserts } from "./deps.ts";
+import { assertEquals } from "../deps_dev.ts";
 import { LogHandler, type LogHandlerOptions } from "./handler.ts";
 import { LogLevel } from "./level.ts";
 import { LogRecord } from "./record.ts";
 import { Logger } from "./logger.ts";
-
-const { assertEquals } = asserts;
 
 type TestHandlerOptions = {
 	name?: boolean;

@@ -1,6 +1,5 @@
-import { asserts } from "../deps.ts";
+import { assertEquals, assertStringIncludes } from "../../deps_dev.ts";
 
-const { assertEquals, assertStringIncludes } = asserts;
 const decoder = new TextDecoder();
 
 {
