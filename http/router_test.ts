@@ -88,3 +88,14 @@ Deno.test("[http/router] router.handler() returns a Response", async () => {
 	assertEquals(response.status, data.status);
 	assertEquals(response.statusText, data.statusText);
 });
+
+Deno.test("[http/router] router.handler() handles thrown HTTP statuses", async () => {
+	const request = new Request(new URL("/", "http://localhost:8000"));
+	const router = new Router().get("/", () => {
+		throw Status.Forbidden;
+	});
+
+	const response = await router.handler(request);
+
+	assertEquals(response.status, Status.Forbidden);
+});
