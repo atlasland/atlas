@@ -40,7 +40,7 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: ${{ env.DENO_DIR }}
-        key: ${{ env.CACHE_VERSION }}-${{ hashFiles('lock.json') }}
+        key: ${{ env.CACHE_VERSION }}-${{ hashFiles('deno.lock') }}
 
     - run: deno task test
 
