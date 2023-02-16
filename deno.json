@@ -3,7 +3,7 @@
 		"cache": "deno cache -r cli.ts error/mod.ts log/mod.ts console/mod.ts",
 		"check": "deno check -r cli.ts error/mod.ts log/mod.ts console/mod.ts",
 		"dev:website": "deno run -A --watch website/main.ts",
-		"test": "deno test -A --unstable --no-check --coverage=./cov"
+		"test": "deno test -A --no-check --coverage=./cov"
 	},
 	"compilerOptions": {
 		"allowJs": false,
