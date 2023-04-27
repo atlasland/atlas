@@ -4,9 +4,7 @@ import { serve, serveFile } from "./deps.ts";
 const logger = console;
 
 // set cwd for deno deploy
-const cwd = Deno.cwd().includes("website")
-	? Deno.cwd()
-	: `${Deno.cwd()}/website`;
+const cwd = Deno.cwd().includes("website") ? Deno.cwd() : `${Deno.cwd()}/website`;
 
 const config = {
 	pages: {

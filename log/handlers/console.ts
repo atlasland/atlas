@@ -1,14 +1,4 @@
-import {
-	bgRed,
-	blue,
-	brightRed,
-	cyan,
-	gray,
-	magenta,
-	red,
-	white,
-	yellow,
-} from "../deps.ts";
+import { bgRed, blue, brightRed, cyan, gray, magenta, red, white, yellow } from "../deps.ts";
 import { LogHandler, type LogHandlerOptions } from "../handler.ts";
 import { getLevelValue, LogLevel } from "../level.ts";
 

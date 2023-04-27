@@ -4,8 +4,7 @@ The log module for the Atlas framework.
 
 ## Usage
 
-The module provides a default logger instance with a basic
-[console handler](#console).
+The module provides a default logger instance with a basic [console handler](#console).
 
 ```ts
 import { default as logger } from "https://deno.land/x/atlas/log/mod.ts";
@@ -38,22 +37,21 @@ This module implements the severity levels described in the
 
 ## Log handlers
 
-A log handler is responsible for formatting and writing a log message to a
-destination.
+A log handler is responsible for formatting and writing a log message to a destination.
 
-A logger instance can have multiple handlers, each with their own configuration.
-A message will be passed to each handler in turn.
+A logger instance can have multiple handlers, each with their own configuration. A message will be
+passed to each handler in turn.
 
 ### Console
 
 The `ConsoleHandler` writes log messages to the console.
 
-If the log level is `debug`, `info` or `notice`, the message is written to
-`Deno.stdout`. Conversely, if the log level is `warning`, `error`, `critical`,
-`alert` or `emergency`, the message is written to `Deno.stderr`.
+If the log level is `debug`, `info` or `notice`, the message is written to `Deno.stdout`.
+Conversely, if the log level is `warning`, `error`, `critical`, `alert` or `emergency`, the message
+is written to `Deno.stderr`.
 
-You can optionally configure the `ConsoleHandler` instance to include a
-timestamp (in UTC) and output the message as a JSON string.
+You can optionally configure the `ConsoleHandler` instance to include a timestamp (in UTC) and
+output the message as a JSON string.
 
 ```ts
 export const logger = new Logger("default", {
@@ -72,17 +70,12 @@ logger.debug("Hello world!");
 
 ### Custom
 
-Writing your own handler is as simple as implementing the `LogHandler`
-interface. Refer to the
+Writing your own handler is as simple as implementing the `LogHandler` interface. Refer to the
 [API reference](https://doc.deno.land/https://deno.land/x/atlas@v0.2.0/log/handler.ts/~/LogHandler)
 for the up to date interface definition.
 
 ```ts
-import {
-	ConsoleHandler,
-	Logger,
-	LogMessage,
-} from "https://deno.land/x/atlas/log/mod.ts";
+import { ConsoleHandler, Logger, LogMessage } from "https://deno.land/x/atlas/log/mod.ts";
 
 class CustomConsoleHandler extends ConsoleHandler {
 	override format(message: LogMessage): string {

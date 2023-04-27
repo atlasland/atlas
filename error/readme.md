@@ -4,13 +4,12 @@ The error module for the Atlas framework.
 
 ## Usage
 
-The module provides a `BaseError` class that can be extended to implement your
-custom errors.
+The module provides a `BaseError` class that can be extended to implement your custom errors.
 
 ## Custom Errors
 
-To create your own custom error classes, you can extend the `BaseError` class
-and implement your own custom logic.
+To create your own custom error classes, you can extend the `BaseError` class and implement your own
+custom logic.
 
 ```ts
 import { BaseError } from "https://deno.land/x/atlas/error/mod.ts";

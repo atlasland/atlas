@@ -20,8 +20,8 @@
 
 Atlas is a web application framework for Deno.
 
-> ⚠️ This project is actively being developed. We do not recommend to use it in
-> production environments.
+> Warning: This project is actively being developed. We do not recommend to use it in production
+> environments.
 
 ## Documentation
 
@@ -29,8 +29,7 @@ Visit [atlas.land/docs](https://atlas.land/docs) to view the full documentation.
 
 ## Community
 
-Join the [Atlas Discord](https://discord.gg/3TWUmV4Wmg) server to chat with
-other community members.
+Join the [Atlas Discord](https://discord.gg/3TWUmV4Wmg) server to chat with other community members.
 
 ## Contributing
 

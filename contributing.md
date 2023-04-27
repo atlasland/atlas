@@ -2,9 +2,8 @@
 
 ## Bug Reports
 
-We encourage active participation on the Atlas project. If you encountered a
-bug, please open a Pull Request with a failing test case so it can be addressed
-properly:
+We encourage active participation on the Atlas project. If you encountered a bug, please open a Pull
+Request with a failing test case so it can be addressed properly:
 
 - [Github Pull Requests](https://github.com/atlasland/atlas/pulls)
 
