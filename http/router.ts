@@ -13,11 +13,9 @@ export const METHODS = {
 	GET: "GET",
 	POST: "POST",
 	PUT: "PUT",
-	DELETE: "DELETE",
-	// CONNECT: "CONNECT",
-	OPTIONS: "OPTIONS",
-	// TRACE: "TRACE",
 	PATCH: "PATCH",
+	DELETE: "DELETE",
+	OPTIONS: "OPTIONS",
 	ANY: "ANY",
 } as const;
 
@@ -184,6 +182,11 @@ export class Router {
 		return this.register("PUT", pattern, handler);
 	}
 
+	/** Registers a PATCH handler */
+	patch(pattern: Pattern, handler: Handler) {
+		return this.register("PATCH", pattern, handler);
+	}
+
 	/** Registers a DELETE handler */
 	del(pattern: Pattern, handler: Handler) {
 		return this.register("DELETE", pattern, handler);
@@ -192,11 +195,6 @@ export class Router {
 	/** Registers an OPTIONS handler */
 	options(pattern: Pattern, handler: Handler) {
 		return this.register("OPTIONS", pattern, handler);
-	}
-
-	/** Registers a PATCH handler */
-	patch(pattern: Pattern, handler: Handler) {
-		return this.register("PATCH", pattern, handler);
 	}
 
 	/** Registers an ANY handler */
