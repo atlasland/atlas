@@ -117,7 +117,6 @@ Deno.test("[http/router] toMethod() returns a valid HTTP Method", () => {
 	const expectations = new Map([
 		[toMethod("get"), METHODS.GET],
 		[toMethod("GET"), METHODS.GET],
-		[toMethod("head"), METHODS.HEAD],
 		[toMethod("post"), METHODS.POST],
 		[toMethod("put"), METHODS.PUT],
 		[toMethod("del"), METHODS.DELETE],

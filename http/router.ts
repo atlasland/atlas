@@ -11,7 +11,6 @@ import {
 
 export const METHODS = {
 	GET: "GET",
-	HEAD: "HEAD",
 	POST: "POST",
 	PUT: "PUT",
 	DELETE: "DELETE",
@@ -173,11 +172,6 @@ export class Router {
 	/** Registers a GET handler */
 	get(pattern: Pattern, handler: Handler) {
 		return this.register("GET", pattern, handler);
-	}
-
-	/** Registers a HEAD handler */
-	head(pattern: Pattern, handler: Handler) {
-		return this.register("HEAD", pattern, handler);
 	}
 
 	/** Registers a POST handler */
