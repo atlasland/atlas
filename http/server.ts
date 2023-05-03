@@ -1,60 +1,52 @@
-import { logger, serve, Status } from "./deps.ts";
-import { type Handler, Router } from "./router.ts";
+import { serve, type ServeInit } from "./deps.ts";
+import { fromFileSystem, type Handler, isHandler, isRouter, Router } from "./router.ts";
 
-export class Server {
-	#router: Router;
+export type StartOptions = Pick<ServeInit, "onListen"> & {
+	/** The root path for the application. Defaults to `Deno.cwd()`. */
+	root?: string;
 
-	constructor(router: Router) {
-		this.#router = router;
-	}
+	/** The callback to be called when the server encounters an error.*/
+	onError?: (error: unknown) => void;
+};
 
-	get router() {
-		return this.#router;
-	}
-
-	/** Starts an http server instance */
-	async serve() {
-		const controller = new AbortController();
-
-		try {
-			await serve(this.#router.handler.bind(this.#router), {
-				signal: controller.signal,
-				onListen: ({ hostname, port }) => {
-					const host = hostname === "0.0.0.0" ? "localhost" : hostname;
-					logger.info(`Listening on http://${host}:${port}`);
-				},
-				onError: this.#router.errorHandler.bind(this.#router),
-			});
-		} catch (error) {
-			logger.error(error);
-			controller.abort();
-		}
-	}
-}
-
-/** Starts an http server instance */
-export async function start(): Promise<void>;
-export async function start(handler: Handler): Promise<void>;
-export async function start(router: Router): Promise<void>;
-export async function start(init?: unknown): Promise<void> {
+/** Starts a new http server */
+export async function start(handler: Handler, options?: StartOptions): Promise<void>;
+export async function start(router: Router, options?: StartOptions): Promise<void>;
+export async function start(options?: StartOptions): Promise<void>;
+export async function start(init?: unknown, options?: StartOptions): Promise<void> {
 	let router: Router;
+	let opts: StartOptions = {
+		root: Deno.cwd(),
+		...options ?? {},
+	};
 
 	// router provided
-	if (init instanceof Router) {
+	if (isRouter(init)) {
 		router = init;
 	} // handler fn provided
-	else if (typeof init === "function") {
+	else if (isHandler(init)) {
 		router = new Router().any("*", init as Handler);
-	} // no routes, try file system
-	else if (init === undefined) {
-		logger.debug("no routes, try file system");
-		// TODO(gabrielizaias): implement file-system routing
-		router = new Router().any("*", () => {
-			throw Status.NotImplemented;
-		});
+	} // no routes, try file-system
+	else if (init === undefined || typeof init === "object") {
+		opts = { ...opts, ...init };
+		router = await fromFileSystem(`${opts.root}/routes`);
 	} else {
 		throw new Error("Invalid init parameter passed for `start()`");
 	}
 
-	await new Server(router).serve();
+	const controller = new AbortController();
+
+	try {
+		await serve(router.handler.bind(router), {
+			signal: controller.signal,
+			onListen: opts?.onListen,
+			onError: (error) => {
+				opts?.onError?.(error);
+				return router.errorHandler.bind(router)(error);
+			},
+		});
+	} catch (error) {
+		opts?.onError?.(error);
+		controller.abort();
+	}
 }

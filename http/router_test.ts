@@ -1,26 +1,37 @@
 import { assertEquals } from "../deps_dev.ts";
 import { Status, STATUS_TEXT } from "./deps.ts";
-import { Method, Params, type RouteMap, Router } from "./router.ts";
+import {
+	type Handler,
+	METHODS,
+	notFoundHandler,
+	type Params,
+	type RouteMap,
+	Router,
+	toHandler,
+	toMethod,
+	toParams,
+	toPattern,
+} from "./router.ts";
 
 Deno.test("[http/router] router.register() registers a new handler", () => {
 	const router = new Router();
 	const handler = () => ({});
-	const expectations: RouteMap = new Map();
+	const routes: RouteMap = new Map();
 
-	for (const method of Object.values(Method)) {
-		expectations.set(method, new Map([["/", handler]]));
+	for (const method of Object.values(METHODS)) {
+		routes.set(`${method} /`, handler);
 		router.register(method, "/", handler);
 	}
 
-	assertEquals(router.routes, expectations);
+	assertEquals(router.routes, routes);
 });
 
-for (const method of Object.values(Method)) {
-	const fn = (method === Method.DELETE) ? "del" : method.toLowerCase();
+for (const method of Object.values(METHODS)) {
+	const fn = method === METHODS.DELETE ? "del" : method.toLowerCase();
 
 	Deno.test(`[http/router] router.${fn}() registers a new ${method} handler`, () => {
 		const router = new Router();
-		const handler = () => ({});
+		const handler: Handler = () => ({});
 
 		// deno-lint-ignore ban-ts-comment
 		// @ts-ignore
@@ -28,48 +39,10 @@ for (const method of Object.values(Method)) {
 
 		assertEquals(
 			router.routes,
-			new Map([
-				[method, new Map([["/", handler]])],
-			]),
+			new Map([[`${method} /`, handler]]),
 		);
 	});
 }
-
-Deno.test("[http/router] Router.toPattern() returns a valid URLPattern pattern", () => {
-	const expectations = new Map([
-		[Router.toPattern("/index.ts"), "/"],
-		[Router.toPattern("/[id].ts"), "/:id"],
-		[
-			Router.toPattern("/test/[category]/[subcategory].ts"),
-			"/test/:category/:subcategory",
-		],
-	]);
-
-	for (const [pattern, expected] of expectations) {
-		assertEquals(pattern, expected);
-	}
-});
-
-Deno.test("[http/router] Router.toParams() returns a key-value object of URL params", () => {
-	const expectations = new Map<Record<string, string>, Record<string, string>>([
-		[Router.toParams("/", "/"), {}],
-		[Router.toParams("/123", "/:id"), { id: "123" }],
-		[
-			Router.toParams(
-				"/test/category-1/subcategory-2",
-				"/test/:category/:subcategory",
-			),
-			{
-				category: "category-1",
-				subcategory: "subcategory-2",
-			},
-		],
-	]);
-
-	for (const [pattern, expected] of expectations) {
-		assertEquals(pattern, expected);
-	}
-});
 
 Deno.test("[http/router] router.handler() returns a Response", async () => {
 	const data = new Response("ok", { statusText: STATUS_TEXT[Status.OK] });
@@ -112,17 +85,17 @@ Deno.test("[http/router] router.handler() handles thrown HTTP statuses", async (
 });
 
 Deno.test("[http/router] passes URL params to handler context", async () => {
-	const outer: Params = {};
+	const params: Params = {};
 	const router = new Router()
 		.get("/:id", (_, { params: { id } }) => {
-			outer.id = id!;
+			params.id = id;
 			return {};
 		})
 		.get(
 			"/:category/:subcategory",
 			(_, { params: { category, subcategory } }) => {
-				outer.category = category!;
-				outer.subcategory = subcategory!;
+				params.category = category;
+				params.subcategory = subcategory;
 				return {};
 			},
 		);
@@ -135,7 +108,93 @@ Deno.test("[http/router] passes URL params to handler context", async () => {
 	await router.handler(request1);
 	await router.handler(request2);
 
-	assertEquals(outer.id, "12345");
-	assertEquals(outer.category, "computers");
-	assertEquals(outer.subcategory, "laptops");
+	assertEquals(params.id, "12345");
+	assertEquals(params.category, "computers");
+	assertEquals(params.subcategory, "laptops");
+});
+
+Deno.test("[http/router] toMethod() returns a valid HTTP Method", () => {
+	const expectations = new Map([
+		[toMethod("get"), METHODS.GET],
+		[toMethod("GET"), METHODS.GET],
+		[toMethod("head"), METHODS.HEAD],
+		[toMethod("post"), METHODS.POST],
+		[toMethod("put"), METHODS.PUT],
+		[toMethod("del"), METHODS.DELETE],
+		[toMethod("delete"), METHODS.DELETE],
+		[toMethod("options"), METHODS.OPTIONS],
+		[toMethod("patch"), METHODS.PATCH],
+		[toMethod("any"), METHODS.ANY],
+		[toMethod("*"), METHODS.ANY],
+		[toMethod("__gibberish__"), METHODS.ANY],
+		[toMethod("123456709"), METHODS.ANY],
+	]);
+
+	for (const [method, expected] of expectations) {
+		assertEquals(method, expected);
+	}
+});
+
+Deno.test("[http/router] toPattern() returns a valid URLPattern pattern", () => {
+	const expectations = new Map([
+		[toPattern("/index.ts"), "/"],
+		[toPattern("/nested/index.ts"), "/nested"],
+		[toPattern("/[id].ts"), "/:id"],
+		[
+			toPattern("/categories/[category]/[subcategory].ts"),
+			"/categories/:category/:subcategory",
+		],
+		[toPattern("/[...slug].ts"), "/:slug*"],
+	]);
+
+	for (const [pattern, expected] of expectations) {
+		assertEquals(pattern, expected);
+	}
+});
+
+Deno.test("[http/router] toParams() returns a key-value object of URL params", () => {
+	const expectations = new Map([
+		[toParams("/", "/"), {}],
+		[toParams("/123", "/:id"), { id: "123" }],
+		[
+			toParams(
+				"/test/category-1/subcategory-2",
+				"/test/:category/:subcategory",
+			),
+			{
+				category: "category-1",
+				subcategory: "subcategory-2",
+			},
+		],
+		[toParams("/pokemons/pikachu", "/:catchAll*"), { catchAll: "pokemons/pikachu" }],
+		[
+			toParams(
+				"/level1/1/level2/2/and/abc/def/ghi",
+				"/level1/:value1/level2/:value2/and/:anything*",
+			),
+			{
+				value1: "1",
+				value2: "2",
+				anything: "abc/def/ghi",
+			},
+		],
+	]);
+
+	for (const [pattern, expected] of expectations) {
+		assertEquals(pattern, expected);
+	}
+});
+
+Deno.test("[http/router] toHandler() returns a Handler function", () => {
+	const fn: Handler = () => ({});
+	const expectations = new Map([
+		[toHandler(), notFoundHandler],
+		[toHandler(fn), fn],
+		[toHandler("/", notFoundHandler), notFoundHandler],
+		[toHandler(null, fn), fn],
+	]);
+
+	for (const [handler, expected] of expectations) {
+		assertEquals(handler, expected);
+	}
 });

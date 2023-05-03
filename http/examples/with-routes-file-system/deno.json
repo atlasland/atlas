@@ -1,0 +1,6 @@
+{
+	"tasks": {
+		"start": "deno run --no-lock -A main.ts",
+		"dev": "deno run --no-lock -A --watch=routes/ main.ts"
+	}
+}

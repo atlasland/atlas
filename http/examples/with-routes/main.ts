@@ -3,22 +3,28 @@ import { Router, start } from "../../mod.ts";
 const router = new Router();
 
 router.get("/", () => {
-	return { message: "A GET handler" };
+	return {
+		message: "A GET handler",
+	};
 });
 
 router.post("/", () => {
-	return { message: "A POST handler" };
+	return {
+		message: "A POST handler",
+	};
 });
 
-router.get("/:id", (_request, { params: { id } }) => {
-	return { id };
+router.get("/:id", (_request, { params }) => {
+	return {
+		id: params?.id,
+	};
 });
 
-router.get(
-	"/:category/:subcategory",
-	(_request, { params: { category, subcategory } }) => {
-		return { category, subcategory };
-	},
-);
+router.get("/:category/:subcategory", (_request, { params }) => {
+	return {
+		category: params?.category,
+		subcategory: params?.subcategory,
+	};
+});
 
 await start(router);

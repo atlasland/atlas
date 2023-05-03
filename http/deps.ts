@@ -1,6 +1,7 @@
 export {
 	type ConnInfo,
 	serve,
+	type ServeInit,
 	Status,
 	STATUS_TEXT,
 } from "https://deno.land/std@0.185.0/http/mod.ts";
