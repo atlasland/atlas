@@ -3,6 +3,7 @@ import { Status, STATUS_TEXT } from "./deps.ts";
 import {
 	type Handler,
 	isMethod,
+	isPattern,
 	isRouter,
 	METHODS,
 	notFoundHandler,
@@ -176,6 +177,23 @@ Deno.test("[http/router] toMethod() returns a valid HTTP Method", () => {
 
 	for (const [method, expected] of expectations) {
 		assertEquals(method, expected);
+	}
+});
+
+Deno.test("[http/router] isPattern() correctly determines if the input is a valid Pattern", () => {
+	const expectations = new Map([
+		[isPattern("/"), true],
+		[isPattern("*"), true],
+		[isPattern("/:test"), true],
+		[isPattern("/abc/123"), true],
+		[isPattern("/:one/:two/:three"), true],
+		[isPattern(""), false],
+		[isPattern(undefined as unknown as string), false],
+		[isPattern({} as unknown as string), false],
+	]);
+
+	for (const [input, expected] of expectations) {
+		assertEquals(input, expected);
 	}
 });
 
