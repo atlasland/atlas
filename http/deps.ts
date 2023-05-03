@@ -9,7 +9,7 @@ export { walk, type WalkOptions } from "https://deno.land/std@0.185.0/fs/mod.ts"
 export { extname, toFileUrl } from "https://deno.land/std@0.185.0/path/mod.ts";
 
 import { ConsoleHandler, Logger } from "../log/mod.ts";
-export const logger = new Logger("http", {
+export const logger = new Logger("atlas/http", {
 	handlers: [
 		new ConsoleHandler(),
 	],
