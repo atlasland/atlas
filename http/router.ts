@@ -288,7 +288,7 @@ export function toMethod(method: string): Method {
 /**
  * Transforms a given string into an URLPattern `pathname` pattern. Fallback to `"*".
  *
- * Handles file-system paths as well
+ * Handles file-system paths as well.
  *
  * Examples:
  * - `/index.ts` to `/`
@@ -364,7 +364,12 @@ export function isPattern(input: string): input is Pattern {
 /** A type guard that determines if the input is a Router. */
 // deno-lint-ignore no-explicit-any
 export function isRouter(input: any): input is Router {
-	return "handler" in input && isHandler(input.handler);
+	return input instanceof Router ||
+		input !== undefined &&
+			input !== null &&
+			Array.isArray(input) === false &&
+			["string", "number", "boolean", "string"].includes(typeof input) === false &&
+			"handler" in input && isHandler(input.handler);
 }
 
 /** A type guard that determines if the input is a Handler. */

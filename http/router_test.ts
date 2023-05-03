@@ -2,6 +2,7 @@ import { assertEquals } from "../deps_dev.ts";
 import { Status, STATUS_TEXT } from "./deps.ts";
 import {
 	type Handler,
+	isRouter,
 	METHODS,
 	notFoundHandler,
 	type Params,
@@ -111,6 +112,25 @@ Deno.test("[http/router] passes URL params to handler context", async () => {
 	assertEquals(params.id, "12345");
 	assertEquals(params.category, "computers");
 	assertEquals(params.subcategory, "laptops");
+});
+
+Deno.test("[http/router] isRouter() correctly determines if the input is a Router", () => {
+	const expectations = new Map([
+		[isRouter(new Router()), true],
+		[isRouter({ handler: () => {} }), true],
+		[isRouter({}), false],
+		[isRouter("*"), false],
+		[isRouter(""), false],
+		[isRouter([]), false],
+		[isRouter(new Map()), false],
+		[isRouter(123), false],
+		[isRouter(undefined), false],
+		[isRouter(null), false],
+	]);
+
+	for (const [input, expected] of expectations) {
+		assertEquals(input, expected);
+	}
 });
 
 Deno.test("[http/router] toMethod() returns a valid HTTP Method", () => {
