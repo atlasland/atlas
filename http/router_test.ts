@@ -2,6 +2,7 @@ import { assertEquals } from "../deps_dev.ts";
 import { Status, STATUS_TEXT } from "./deps.ts";
 import {
 	type Handler,
+	isMethod,
 	isRouter,
 	METHODS,
 	notFoundHandler,
@@ -126,6 +127,30 @@ Deno.test("[http/router] isRouter() correctly determines if the input is a Route
 		[isRouter(123), false],
 		[isRouter(undefined), false],
 		[isRouter(null), false],
+	]);
+
+	for (const [input, expected] of expectations) {
+		assertEquals(input, expected);
+	}
+});
+
+Deno.test("[http/router] isMethod() correctly determines if the input is a valid Method", () => {
+	const expectations = new Map([
+		[isMethod("get"), true],
+		[isMethod("GET"), true],
+		[isMethod("post"), true],
+		[isMethod("put"), true],
+		[isMethod("patch"), true],
+		[isMethod("del"), true],
+		[isMethod("delete"), false],
+		[isMethod("options"), true],
+		[isMethod("any"), true],
+		[isMethod("*"), false],
+		[isMethod("__gibberish__"), false],
+		[isMethod("123456709"), false],
+		[isMethod(""), false],
+		[isMethod(undefined as unknown as string), false],
+		[isMethod({} as unknown as string), false],
 	]);
 
 	for (const [input, expected] of expectations) {
