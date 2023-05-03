@@ -1,4 +1,5 @@
-// deno-lint-ignore require-await
-export async function handler() {
+import { type Handler } from "../../../mod.ts";
+
+export const handler: Handler = () => {
 	return { message: "index route" };
-}
+};
