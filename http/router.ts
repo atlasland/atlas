@@ -9,6 +9,11 @@ import {
 	type WalkOptions,
 } from "./deps.ts";
 
+/**
+ * Supported HTTP methods.
+ *
+ * `ANY` is the wildcard value for any request method.
+ */
 export const METHODS = {
 	GET: "GET",
 	POST: "POST",
@@ -20,7 +25,7 @@ export const METHODS = {
 } as const;
 
 /**
- * Supported HTTP methods.
+ * An HTTP method.
  *
  * `ANY` is the wildcard value for any request method.
  */
