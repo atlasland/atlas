@@ -217,11 +217,7 @@ export async function fromFileSystem(path: string): Promise<Router> {
 				router.register(method, pattern, handlerFn);
 			}
 		}
-
-		logger.debug("\n", relative, "\n", pattern, "\n", handler, "\n");
 	}
-
-	logger.debug("=== routes ===", "\n", router.routes);
 
 	return router;
 }
