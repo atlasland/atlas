@@ -26,6 +26,19 @@ export const METHODS = {
  */
 export type Method = keyof typeof METHODS;
 
+/** Supported HTTP Status codes for redirects. */
+export const REDIRECT_STATUS_CODES = {
+	300: 300,
+	301: 301,
+	302: 302,
+	303: 303,
+	307: 307,
+	308: 308,
+} as const;
+
+/** An HTTP Status codes for a redirect. */
+export type RedirectStatusCode = keyof typeof REDIRECT_STATUS_CODES;
+
 /** An `URLPattern` string to match against a `Request.pathname` */
 export type Pattern = `/${string}` | "*";
 
@@ -256,6 +269,22 @@ export function notFound(): Response {
 	return new Response(null, {
 		status,
 		statusText: STATUS_TEXT[status],
+	});
+}
+
+/** Redirects a request to a given destination. Defaults to a "307 Temporary Redirect" status code. */
+export function redirect(
+	destination: URL | string,
+	status: RedirectStatusCode = 307,
+): Response {
+	const location = destination instanceof URL ? destination.toString() : destination;
+
+	return new Response(null, {
+		status,
+		statusText: STATUS_TEXT[status],
+		headers: {
+			location,
+		},
 	});
 }
 

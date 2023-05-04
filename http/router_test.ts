@@ -8,6 +8,8 @@ import {
 	METHODS,
 	notFound,
 	type Params,
+	redirect,
+	REDIRECT_STATUS_CODES,
 	type RouteMap,
 	Router,
 	toHandler,
@@ -266,3 +268,12 @@ Deno.test("[http/router] notFound() returns an HTTP 404 response", () => {
 	assertEquals(response.status, Status.NotFound);
 	assertEquals(response.statusText, STATUS_TEXT[Status.NotFound]);
 });
+
+for (const status of Object.values(REDIRECT_STATUS_CODES)) {
+	Deno.test(`[http/router] redirect() returns an HTTP ${status} response`, () => {
+		const response = redirect("https://example.com", status);
+		assertEquals(response.status, status);
+		assertEquals(response.statusText, STATUS_TEXT[status]);
+		assertEquals(response.headers.get("location"), "https://example.com");
+	});
+}

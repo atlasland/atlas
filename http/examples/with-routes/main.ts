@@ -1,4 +1,4 @@
-import { Router, start } from "../../mod.ts";
+import { redirect, Router, start } from "../../mod.ts";
 
 const router = new Router();
 
@@ -25,6 +25,14 @@ router.get("/:category/:subcategory", (_request, { params }) => {
 		category: params?.category,
 		subcategory: params?.subcategory,
 	};
+});
+
+router.get("/search", () => {
+	return redirect("https://www.google.com");
+});
+
+router.get("/redirect", () => {
+	return redirect("/computers/laptops", 308);
 });
 
 await start(router);
