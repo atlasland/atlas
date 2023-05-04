@@ -260,3 +260,9 @@ Deno.test("[http/router] toHandler() returns a Handler function", () => {
 		assertEquals(handler, expected);
 	}
 });
+
+Deno.test("[http/router] notFound() returns an HTTP 404 response", () => {
+	const response = notFound();
+	assertEquals(response.status, Status.NotFound);
+	assertEquals(response.statusText, STATUS_TEXT[Status.NotFound]);
+});
