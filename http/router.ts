@@ -73,7 +73,7 @@ export class Router {
 		const { method } = request;
 		const { pathname, search } = new URL(request.url);
 
-		// TODO(gabrielizaias): handle request for assets
+		// TODO: handle request for assets
 
 		const [pattern, handler] = getRouteMatch(request, this.#routes);
 		const params = toParams(pathname, pattern);
