@@ -51,12 +51,6 @@ export type Context<P extends Params = Record<string, string | undefined>> =
 		params: P;
 	};
 
-/** The middleware Request context */
-export type MiddlewareContext = Context & {
-	/** Calls the next handler function for the Request */
-	next?: () => Promise<void>;
-};
-
 /** The path parameters found in the URL pathname */
 export type Params = Record<string, string | undefined>;
 
