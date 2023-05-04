@@ -43,13 +43,6 @@ export type Handler<P extends Params = Record<string, string | undefined>> = (
 	| Record<string, unknown>
 	| Promise<Record<string, unknown>>;
 
-/** A handler function that handles thrown errors */
-export type ErrorHandler<P extends Params = Record<string, string | undefined>> = (
-	error: unknown,
-	request?: Request,
-	context?: Context<P>,
-) => Response | Promise<Response>;
-
 /** The Request context */
 export type Context<P extends Params = Record<string, string | undefined>> =
 	& Partial<ConnInfo>
