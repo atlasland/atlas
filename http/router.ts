@@ -256,9 +256,6 @@ export function notFound(): Response {
 	return new Response(null, {
 		status,
 		statusText: STATUS_TEXT[status],
-		headers: {
-			"content-type": "text/plain; charset=UTF-8",
-		},
 	});
 }
 
