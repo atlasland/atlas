@@ -68,7 +68,7 @@ export class Router {
 	/** Handles an incoming request */
 	async handler(
 		request: Request,
-		conection?: ConnInfo,
+		connection?: ConnInfo,
 	) {
 		const { method } = request;
 		const { pathname, search } = new URL(request.url);
@@ -77,7 +77,7 @@ export class Router {
 
 		const [pattern, handler] = getRouteMatch(request, this.#routes);
 		const params = toParams(pathname, pattern);
-		const context = { ...conection, params };
+		const context = { ...connection, params };
 
 		let status = Status.OK;
 		let headers = new Headers();
