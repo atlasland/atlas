@@ -6,7 +6,7 @@ import {
 	isPattern,
 	isRouter,
 	METHODS,
-	notFoundHandler,
+	notFound,
 	type Params,
 	type RouteMap,
 	Router,
@@ -250,9 +250,9 @@ Deno.test("[http/router] toParams() returns a key-value object of URL params", (
 Deno.test("[http/router] toHandler() returns a Handler function", () => {
 	const fn: Handler = () => ({});
 	const expectations = new Map([
-		[toHandler(), notFoundHandler],
+		[toHandler(), notFound],
 		[toHandler(fn), fn],
-		[toHandler("/", notFoundHandler), notFoundHandler],
+		[toHandler("/", notFound), notFound],
 		[toHandler(null, fn), fn],
 	]);
 

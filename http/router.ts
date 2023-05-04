@@ -267,8 +267,8 @@ export function getRouteMatch(
 	return [pattern, handler];
 }
 
-/** The default `Not Found` handler */
-export function notFoundHandler() {
+/** The default `Not Found` handler. */
+export function notFound(): Response {
 	const status = Status.NotFound;
 	return new Response(null, {
 		status,
@@ -346,8 +346,8 @@ export function toParams(pathname: string, pattern: Pattern): Params {
 		.exec({ pathname })?.pathname.groups ?? {};
 }
 
-/** Transforms a given function into a Handler. Fallback to `notFoundHandler` */
-export function toHandler(fn?: unknown, fallback: Handler = notFoundHandler): Handler {
+/** Transforms a given function into a Handler. Fallback to `notFound` */
+export function toHandler(fn?: unknown, fallback: Handler = notFound): Handler {
 	return isHandler(fn) ? fn : fallback;
 }
 
