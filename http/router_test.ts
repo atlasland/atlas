@@ -31,6 +31,16 @@ Deno.test("[http/router] router.register() registers a new handler", () => {
 	assertEquals(router.routes, routes);
 });
 
+Deno.test("[http/router] router.register() allows only one handler for a given method + pattern", () => {
+	const router = new Router();
+	const handler = () => ({});
+
+	router.register("GET", "/", handler);
+	router.register("GET", "/", handler);
+
+	assertEquals(router.routes.size, 1);
+});
+
 for (const method of Object.values(METHODS)) {
 	const fn = method === METHODS.DELETE ? "del" : method.toLowerCase();
 
