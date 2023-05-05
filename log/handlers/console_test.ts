@@ -58,24 +58,19 @@ Deno.test("[log/handlers] ConsoleHandler colorizes a log record level", async ()
 	assertStringIncludes(stdout.slice(11, 15), "[39m");
 });
 
-/** Runs a test fixture on a sub-process and caputure the output for assertions */
+/** Runs a test fixture on a sub-process and captures the output for assertions */
 async function runFixture(fixture: string): Promise<[string, string]> {
-	const process = Deno.run({
-		cmd: [
-			"deno",
+	const command = new Deno.Command(Deno.execPath(), {
+		args: [
 			"run",
 			`./log/handlers/console_test.fixture.${fixture}.ts`,
 		],
 		stdout: "piped",
 		stderr: "piped",
 	});
+	const { stdout, stderr } = await command.output();
 
-	const stdout = decoder.decode(await process.output());
-	const stderr = decoder.decode(await process.stderrOutput());
-
-	process.close();
-
-	return [stdout, stderr];
+	return [decoder.decode(stdout), decoder.decode(stderr)];
 }
 
 /** Retrieves a given line from a process output */
