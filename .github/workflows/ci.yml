@@ -8,6 +8,7 @@ on:
 
 env:
   DENO_DIR: .deno
+  DENO_VERSION: v1.x
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.run_id }}
@@ -34,7 +35,7 @@ jobs:
 
     - uses: denoland/setup-deno@v1
       with:
-        deno-version: v1.x
+        deno-version: ${{ env.DENO_VERSION }}
 
     - uses: actions/cache@v3
       with:
@@ -59,7 +60,7 @@ jobs:
 
       - uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x
+          deno-version: ${{ env.DENO_VERSION }}
 
       - run: deno task check
 
