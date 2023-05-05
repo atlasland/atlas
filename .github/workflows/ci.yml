@@ -7,7 +7,6 @@ on:
     branches: [main, "*.x"]
 
 env:
-  CACHE_VERSION: 1
   DENO_DIR: .deno
 
 concurrency:
@@ -40,7 +39,7 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: ${{ env.DENO_DIR }}
-        key: ${{ env.CACHE_VERSION }}-${{ hashFiles('deno.lock') }}
+        key: dependencies-${{ hashFiles('deno.lock') }}
 
     - run: deno task test
 
