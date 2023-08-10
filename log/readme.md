@@ -71,8 +71,8 @@ logger.debug("Hello world!");
 ### Custom
 
 Writing your own handler is as simple as implementing the `LogHandler` interface. Refer to the
-[API reference](https://doc.deno.land/https://deno.land/x/atlas@v0.2.0/log/handler.ts/~/LogHandler)
-for the up to date interface definition.
+[API reference](https://deno.land/x/atlas/log/handler.ts?s=LogHandler) for the up to date interface
+definition.
 
 ```ts
 import { ConsoleHandler, Logger, LogMessage } from "https://deno.land/x/atlas/log/mod.ts";
