@@ -1,4 +1,5 @@
 import { serve, type ServeInit } from "./deps.ts";
+import { logger } from "../deps.ts";
 import { fromFileSystem, type Handler, isHandler, isRouter, Router } from "./router.ts";
 
 export type StartOptions = Pick<ServeInit, "onListen"> & {
