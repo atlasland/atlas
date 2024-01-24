@@ -8,5 +8,5 @@ export {
 	red,
 	white,
 	yellow,
-} from "https://deno.land/std@0.207.0/fmt/colors.ts";
-export { parse } from "https://deno.land/std@0.207.0/flags/mod.ts";
+} from "https://deno.land/std@0.212.0/fmt/colors.ts";
+export { parse } from "https://deno.land/std@0.212.0/flags/mod.ts";

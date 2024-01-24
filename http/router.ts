@@ -2,8 +2,10 @@ import {
 	type ConnInfo,
 	extname,
 	logger,
-	Status,
+	STATUS_CODE,
 	STATUS_TEXT,
+	type StatusCode,
+	type RedirectStatus,
 	toFileUrl,
 	walk,
 	type WalkOptions,
@@ -30,19 +32,6 @@ export const METHODS = {
  * `ANY` is the wildcard value for any request method.
  */
 export type Method = keyof typeof METHODS;
-
-/** Supported HTTP Status codes for redirects. */
-export const REDIRECT_STATUS_CODES = {
-	300: 300,
-	301: 301,
-	302: 302,
-	303: 303,
-	307: 307,
-	308: 308,
-} as const;
-
-/** An HTTP Status codes for a redirect. */
-export type RedirectStatusCode = keyof typeof REDIRECT_STATUS_CODES;
 
 /** An `URLPattern` string to match against a `Request.pathname` */
 export type Pattern = `/${string}` | "*";
@@ -97,7 +86,7 @@ export class Router {
 		const params = toParams(pathname, pattern);
 		const context = { ...connection, params };
 
-		let status = Status.OK;
+		let status: StatusCode = STATUS_CODE.OK;
 		let headers = new Headers();
 		let body: BodyInit | null = null;
 
@@ -105,7 +94,7 @@ export class Router {
 			const result = await handler(request, context);
 
 			if (result instanceof Response) {
-				status = result.status;
+				status = result.status as StatusCode;
 				body = result.body;
 				headers = new Headers(result.headers);
 			} else {
@@ -118,7 +107,7 @@ export class Router {
 			}
 		} catch (error) {
 			const result = await this.errorHandler(error, request, context);
-			status = result.status;
+			status = result.status as StatusCode;
 			body = result.body;
 			headers = new Headers(result.headers);
 		}
@@ -137,13 +126,13 @@ export class Router {
 	/** The default error handler */
 	// deno-lint-ignore require-await
 	async errorHandler(error: unknown, _request?: Request, _context?: Context) {
-		let status = Status.InternalServerError;
+		let status: StatusCode = STATUS_CODE.InternalServerError;
 		let body = `${STATUS_TEXT[status]}`;
 		const headers = new Headers();
 
 		// handle shorthand `throw 404` or `throw Status.NotFound`
 		if (typeof error === "number") {
-			status = error;
+			status = error as StatusCode;
 			headers.set("content-type", "text/plain; charset=UTF-8");
 			body = `${status} ${STATUS_TEXT[status]}`;
 		} else {
@@ -270,7 +259,7 @@ export function getRouteMatch(
 
 /** The default `Not Found` handler. */
 export function notFound(): Response {
-	const status = Status.NotFound;
+	const status = STATUS_CODE.NotFound;
 	return new Response(null, {
 		status,
 		statusText: STATUS_TEXT[status],
@@ -280,7 +269,7 @@ export function notFound(): Response {
 /** Redirects a request to a given destination. Defaults to a "307 Temporary Redirect" status code. */
 export function redirect(
 	destination: URL | string,
-	status: RedirectStatusCode = 307,
+	status: RedirectStatus = 307,
 ): Response {
 	const location = destination instanceof URL ? destination.toString() : destination;
 
